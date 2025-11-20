@@ -1,0 +1,70 @@
+.address-box {
+  margin-top: 15px;
+}
+
+.error-message {
+  color: red;
+  margin-top: 5px;
+}
+
+a:active {
+  color: #e84e4e;
+}
+
+
+.about-img {
+  height: 600px
+}
+
+@media only screen and (min-width: 300px) {
+
+  h1,
+  .h1 {
+    font-size: 1.5em;
+    color: #e84e4e;
+  }
+
+  p {
+    font-size: 0.9em;
+    color: black;
+  }
+
+  .disclaimer {
+    font-size: 12px;
+  }
+
+  .description {
+    font-size: 13px;
+  }
+}
+
+@media only screen and (min-width: 600px) {
+
+  h1,
+  .h1 {
+    font-size: 4.5em;
+    color: #e84e4e
+  }
+
+  p {
+    font-size: 1.125em;
+    color: black
+  }
+
+  .disclaimer {
+    font-size: 12px;
+  }
+
+  .description {
+    font-size: 13px;
+  }
+}
+
+
+.language {
+  margin-left: 0 !important;
+}
+
+.container {
+  max-width: 1200px !important;
+}

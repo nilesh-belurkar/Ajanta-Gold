@@ -1,0 +1,27 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* 1️⃣ Bootstrap FIRST (it defines h1, h2, etc.) */
+@use "bootstrap/scss/bootstrap";
+
+/* 2️⃣ Then CoreUI */
+@use "@coreui/coreui/scss/coreui" as * with (
+  $enable-deprecation-messages: false
+);
+
+
+/* 3️⃣ CoreUI ChartJS */
+@use "@coreui/chartjs/scss/coreui-chartjs";
+
+/* 4️⃣ Your theme files (these depend on CoreUI being loaded) */
+@use "theme";
+
+/* 5️⃣ Custom fixes */
+@use "custom";
+
+/* 6️⃣ Optional examples */
+@use "examples";
+
+@import 'node_modules/lineicons/dist/lineicons.css';
+
+
+

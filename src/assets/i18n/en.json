@@ -1,0 +1,216 @@
+{
+  "HOME": {
+    "DISCLAIMER": "Website is under construction. Most of images, text are not updated. We are working on it. Thank you for your patience.",
+    "MENU": [
+      {
+        "TEXT": "Home",
+        "LINK": "#home"
+      },
+      {
+        "TEXT": "About",
+        "LINK": "#about"
+      },
+      {
+        "TEXT": "Products",
+        "LINK": "#services"
+      },
+      {
+        "TEXT": "Gallery",
+        "LINK": "#portfolio"
+      },
+      {
+        "TEXT": "Team",
+        "LINK": "#team"
+      },
+      {
+        "TEXT": "Get In Touch",
+        "LINK": "#blog"
+      },
+      {
+        "TEXT": "Order Now",
+        "LINK": "#contact"
+      }
+    ],
+    "TITLE": "We are Ajanta Gold",
+    "DESCRIPTION": "Our association is occupied with handling, exchanging and wholesaling of a complete line of Industrial Chemicals. We figure out and process chemicals with high quality ingredients and compounds.",
+    "EXPLORE": "explore"
+  },
+  "ABOUT": {
+    "TITLE": "About Our Creative Proccess",
+    "DESCRIPTION1": "Established in the year 2018, we “Shree Laxman chemicals”, an ISO guaranteed accomplished the wonderful status of manufacturer, exporter and distributor of Industrial Chemicals.",
+    "DESCRIPTION2": "The chemicals we are using having high quality and have longer time frame of realistic usability. We delivered least harmful chemical compounds to the customers in chemical industries.",
+    "EXPERIANCE_YEAR": "5",
+    "EXPERIANCE": "Years of Experience",
+    "LEARN_MORE_BUTTON": "Learn More"
+  },
+  "PRODUCTS": {
+    "TITLE": "Our Products",
+    "DESCRIPTION": "Following products are available in various variants. For example Scent, Size.",
+    "PRODUCT": [
+      {
+        "TITLE": "AJANTA GOLD BLACK PHENYLE",
+        "DESCRIPTION": "AJANTA GOLD BLACK PHENYLE kills all germs including bacteria, virus, and fungi. Powerful formulation which disinfects the floor and makes it safe",
+        "ICON": "lni lni-clipboard"
+      },
+      {
+        "TITLE": "LAXMI GOLD HYDROCHLORIC(HCL)",
+        "DESCRIPTION": "AJANTA GOLD LAXMI GOLD HYDROCHLORIC(HCL) Disinfectant Toilet Cleaner. Kills 99.9% of germs Removes 10 x more yellowish.",
+        "ICON": "lni lni-target-revenue"
+      },
+      {
+        "TITLE": "AJANTA GOLD HAND WASH",
+        "DESCRIPTION": "AJANTA GOLD Hand Wash makes hand washing quicker and more effective than ever before! AJANTA GOLD Hand Wash gives 99.9% germ protection.",
+        "ICON": "lni lni-invention"
+      },
+      {
+        "TITLE": "AJANTA GOLD DISH WASH",
+        "DESCRIPTION": "AJANTA GOLD Dish Wash is a quality product from Shree laxman chemicals.AJANTA GOLD Dish Wash is the original hand dishwashing brand.",
+        "ICON": "lni lni-bar-chart"
+      },
+      {
+        "TITLE": "AJANTA GOLD NAPHTHALENE BALLS",
+        "DESCRIPTION": "Multicoloured napthalene balls is used as an insecticide and pest repellent. It can be used for toilet and wardrobe.",
+        "ICON": "lni lni-calendar"
+      },
+      {
+        "TITLE": "AJANTA GOLD COMPHOR TABLET",
+        "DESCRIPTION": "Pure Camphor Tablet for daily aarti in your puja. According to Hindu Sashtra camphor is essential for building divine connection with your deity.",
+        "ICON": "lni lni-briefcase"
+      }
+    ]
+  },
+  "GALLERY": {
+    "TITLE": "Gallery",
+    "DESCRIPTION": "",
+    "PHOTOS":[
+      {
+        "SRC": "assets/images/phenyle5LitMogra.jpg",
+        "TITLE": "Scented Phenyle 5 Liter (Perfume : Mogra)"
+      },
+      {
+        "SRC": "assets/images/phenyle5LitRose.jpg",
+        "TITLE": "Scented Phenyle 5 Liter (Perfume : Rose)"
+      },
+      {
+        "SRC": "assets/images/phenyle5Litcentronella.jpg",
+        "TITLE": "Scented Phenyle 5 Liter (Perfume : Centronella)"
+      },
+      {
+        "SRC": "assets/images/phenyle5Litjasmin.jpg",
+        "TITLE": "Scented Phenyle 5 Liter (Perfume : Jasmin)"
+      },
+      {
+        "SRC": "assets/images/phenyle1LitMogra.jpg",
+        "TITLE": "Scented Phenyle 1 Liter (Perfume : Mogra)"
+      },
+      {
+        "SRC": "assets/images/phenyle1LitRose.jpg",
+        "TITLE": "Scented Phenyle 1 Liter (Perfume : Rose)"
+      },
+      {
+        "SRC": "assets/images/phenyle1Litcentronella.jpg",
+        "TITLE": "Scented Phenyle 1 Liter (Perfume : Centronella)"
+      },
+      {
+        "SRC": "assets/images/phenyle1Litjasmin.jpg",
+        "TITLE": "Scented Phenyle 1 Liter (Perfume : Jasmin)"
+      },
+      {
+        "SRC": "assets/images/floorCleaner(levender).jpg",
+        "TITLE": "Floor Cleaner 1 Liter (Perfume : Levender)"
+      },
+      {
+        "SRC": "assets/images/floorCleaner(rose).jpg",
+        "TITLE": "Floor Cleaner 1 Liter (Perfume : Rose)"
+      },
+      {
+        "SRC": "assets/images/glasscleaner.jpg",
+        "TITLE": "AJANTA GOLD Glass Cleaner"
+      },
+      {
+        "SRC": "assets/images/toiletCleaner1.jpg",
+        "TITLE": "Toilet Cleaner 1"
+      },
+      {
+        "SRC": "assets/images/toiletCleaner2.jpg",
+        "TITLE": "Toilet Cleaner 2"
+      },
+      {
+        "SRC": "assets/images/toiletCleaner3.jpg",
+        "TITLE": "Toilet Cleaner 3"
+      },
+      {
+        "SRC": "assets/images/laxmigoldcleaner1.jpg",
+        "TITLE": "Laxmi Gold Cleaner 1"
+      },
+      {
+        "SRC": "assets/images/laxmigoldcleaner2.jpg",
+        "TITLE": "Laxmi Gold Cleaner 2"
+      },
+      {
+        "SRC": "assets/images/laxmigoldcleaner3.jpg",
+        "TITLE": "Laxmi Gold Cleaner 3"
+      },
+      {
+        "SRC": "assets/images/naphthaleanbollsred.jpg",
+        "TITLE": "Naphthlene Balls"
+      },
+      {
+        "SRC": "assets/images/naphthaleanbollsyellow.jpg",
+        "TITLE": "Naphthlene Balls"
+      },
+      {
+        "SRC": "assets/images/naphthaleanbollsred(16tab).jpg",
+        "TITLE": "Naphthlene Balls 16 tablets"
+      }
+      
+    ]
+  },
+  "TEAM": {
+    "TITLE": "Meet The Team",
+    "DESCRIPTION": "We have very highly qualified and skilled team",
+    "NAMES": [
+      {
+        "NAME": "G.L Belurkar",
+        "POSITION": "Founder & Head of Ideas",
+        "CONTACT": "Mobile : +91  9503085125",
+        "IMAGE": "./assets/images/team-1.jpg"
+      },
+      {
+        "NAME": "Santosh Belurkar",
+        "POSITION": "CEO",
+        "CONTACT": "Mobile : +91 9175929204",
+        "IMAGE": "./assets/images/team-2.jpg"
+      },
+      {
+        "NAME": "Mahesh Belurkar",
+        "POSITION": "Marketing Manager",
+        "CONTACT": "Mobile : +91 8605589226",
+        "IMAGE": "./assets/images/team-3.jpg"
+      }
+    ]
+  },
+  "GET_IN_TOUCH": {
+    "TITLE": "GET IN TOUCH",
+    "DESCRIPTION": "",
+    "HEADING": "WE ARE ACCEPTING NEW ORDERS.",
+    "HEADING_DESCRIPTION": "We are actively engaged in processing, trading and wholesaling a wide range of Industrial Chemicals. Our chemicals are acclaimed for their accurate compositions, chemical stability and longer shelf life.",
+    "ADDRESS_HEADING": "Address",
+    "ADDRESS_DESCRIPTION": "Shree Laxman Chemicals Gut No. 41, Plot No. 137, 138, Gopalchawdi, Cidco, Nanded",
+    "MOBILE": "+91 9175929204"
+  },
+  "ORDER": {
+    "TITLE": "Order Now",
+    "DESCRIPTION": "We are accepting new orders. Please fill following form in detail.",
+    "PLACEHOLDER1": {
+      "TEXT": "Name"
+    },
+    "PLACEHOLDER2": {
+      "TEXT": "Mobile"
+    },
+    "PLACEHOLDER3": {
+      "TEXT": "Write your order in brief"
+    },
+    "SUBMIT_BUTTON": "Place your order"
+  }
+}

@@ -1,0 +1,367 @@
+<div>
+  <section id="home" class="header_area">
+    <div id="header_navbar" class="header_navbar">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-12">
+            <nav class="navbar navbar-expand-lg">
+              <a class="navbar-brand" href="#">
+                <img id="logo" src="assets/images/logo.png" alt="Logo">
+              </a>
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="toggler-icon"></span>
+                <span class="toggler-icon"></span>
+                <span class="toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse sub-menu-bar mx-2" id="navbarSupportedContent">
+                <ul id="nav" class="navbar-nav ml-auto text-center">
+                  <li class="nav-item" *ngFor="let menu of 'HOME.MENU' | translate">
+                    <a class="page-scroll " href="{{menu.LINK}}">{{menu.TEXT}}</a>
+                  </li>
+                  <li class="nav-item">
+                    <a routerLink="/login">Login</a>
+                  </li>
+                </ul>
+              </div>
+              <div collapse navbar-collapse sub-menu-bar>
+                <ul class="navbar-nav ml-auto " style="display: flex;flex-direction: row">
+                  <li class="nav-item mx-2">
+                    <a #langSelect [class.active]="currentlanguage==='mr'" (click)="switchLanguage('mr')"
+                      class="page-scroll">मराठी</a>
+                  </li>
+                  <li class="nav-item language m-0 mx-2">
+                    <a class="page-scroll">|</a>
+                  </li>
+                  <li class="nav-item language mx-2">
+                    <a [class.active]="currentlanguage==='hi'" (click)="switchLanguage('hi')"
+                      class="page-scroll">हिंदी</a>
+                  </li>
+                  <li class="nav-item language m-0 mx-2">
+                    <a class="page-scroll">|</a>
+                  </li>
+                  <li class="nav-item language m-0">
+                    <a [class.active]="currentlanguage==='en'" (click)="switchLanguage('en')"
+                      class="page-scroll">English</a>
+                  </li>
+                </ul>
+              </div>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ngb-carousel class="h-40" #carousel [interval]="3000" [pauseOnHover]="pauseOnHover" [pauseOnFocus]="pauseOnFocus"
+      (slide)="onSlide($event)">
+      <ng-template ngbSlide *ngFor="let img of images; index as i">
+        <div class="carousel-caption">
+          <h5 class="hero_title wow fadeInUp text-white disclaimer" data-wow-duration="1.3s" data-wow-delay="0.2s">{{'HOME.DISCLAIMER' | translate}}</h5>
+          <h1 class="hero_title wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.2s">{{'HOME.TITLE' |
+            translate}}
+          </h1>
+          <p class="wow fadeInUp description" data-wow-duration="1.3s" data-wow-delay="0.5s">{{'HOME.DESCRIPTION' | translate}}
+          </p>
+        </div>
+        <img class="w-100 h-40" [src]="img" alt="My image {{i + 1}} description">
+      </ng-template>
+    </ngb-carousel>
+  </section>
+
+  <section id="about" class="pt-50">
+    <div class="about_area">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="about_content pt-50 pb-50">
+              <div class="section_title pb">
+                <h4 class="title wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.2s">{{'ABOUT.TITLE' |
+                  translate}}</h4>
+                <p class="wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.4s">{{'ABOUT.DESCRIPTION1' |
+                  translate}}</p>
+                <p class="wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.6s">{{'ABOUT.DESCRIPTION2' |
+                  translate}}</p>
+              </div>
+              <a href="#" class="main-btn wow fadeInUp" data-wow-duration="1.3s"
+                data-wow-delay="0.7s">{{'ABOUT.LEARN_MORE_BUTTON' | translate}}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="about_image bg_cover wow fadeInLeft" data-wow-duration="1.3s" data-wow-delay="0.2s"
+        style="background-image: url(assets/images/about.jpg)">
+        <div class="image_content">
+          <h4 class="experience"><span>{{'ABOUT.EXPERIANCE_YEAR' | translate}}</span> {{'ABOUT.EXPERIANCE' | translate}}
+          </h4>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="services" class="features_area pt-50">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <div class="section_title text-center pb-25">
+            <h4 class="title wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.2s">{{'PRODUCTS.TITLE' |
+              translate}}</h4>
+            <p class="wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.4s">{{'PRODUCTS.DESCRIPTION' |
+              translate}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div *ngFor="let product of 'PRODUCTS.PRODUCT' | translate" class="col-lg-4 col-md-6">
+          <div class="single_features text-center mt-60 wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.2s">
+            <i class="{{product.ICON}}"></i>
+            <h4 class="features_title">{{product.TITLE | translate}}</h4>
+            <p>{{product.DESCRIPTION | translate}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="portfolio" class="portfolio_area pt-50">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <div class="section_title text-center pb-60">
+            <h4 class="title wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.2s">{{'GALLERY.TITLE' |
+              translate}}</h4>
+            <p class="wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.4s">{{'GALLERY.DESCRIPTION' | translate}}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="portfolio_wrapper d-flex flex-wrap">
+      <div *ngFor="let image of 'GALLERY.PHOTOS' | translate" class="single_portfolio wow fadeInUp"
+        data-wow-duration="1.3s" data-wow-delay="0.2s">
+        <img src="{{image.SRC}}" alt="portfolio">
+        <div class="portfolio_content">
+          <ul class="meta">
+            <li><a href="#"><i class="lni lni-link"></i></a></li>
+          </ul>
+          <h5 class="portfolio_title">{{image.TITLE | translate}}</h5>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="team" class="team_area pt-50">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <div class="section_title text-center pb-25">
+            <h4 class="title wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.2s">{{'TEAM.TITLE' | translate}}
+            </h4>
+            <p class="wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.4s">{{'TEAM.DESCRIPTION' | translate}}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="row justify-content-center team_active">
+        <div class="col-lg-4 col-md-8 col-sm-10" *ngFor="let team of 'TEAM.NAMES' | translate">
+          <div class="single_team mt-30 wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.2s">
+            <img class="about-img" src="{{team.IMAGE}}" alt="team">
+            <div class="team_content">
+              <h4 class="team_name"><a href="#">{{team.NAME}}</a></h4>
+              <p>{{team.POSITION}}</p>
+              <p>{{team.CONTACT}}</p>
+              <ul class="social">
+                <li><a href="#"><i class="lni lni-facebook-filled"></i></a></li>
+                <li><a href="#"><i class="lni lni-twitter-original"></i></a></li>
+                <li><a href="#"><i class="lni lni-linkedin-original"></i></a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- 
+  
+  <section id="testimonial" class="testimonial_area pt-130 pb-130 bg_cover"
+    style="background-image: url(assets/images/testimonial.jpg)">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-8">
+          <div class="glide testimonial_active">
+            <div class="glide__track" data-glide-el="track">
+              <div class="glide__slides">
+                <div class="glide__slide single_testimonial text-center">
+                  <img src="assets/images/author-1.jpg" alt="author">
+                  <h5 class="author_name">Linda</h5>
+                  <span>UX Specialist, Yoast</span>
+                  <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+                    tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At
+                    vero eos accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren.
+                  </p>
+                </div>
+                <div class="glide__slide single_testimonial text-center">
+                  <img src="assets/images/author-2.jpg" alt="author">
+                  <h5 class="author_name">Nancy</h5>
+                  <span>Sr. Software Engineer</span>
+                  <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+                    tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At
+                    vero eos accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren.
+                  </p>
+                </div>
+                <div class="glide__slide single_testimonial text-center">
+                  <img src="assets/images/author-3.jpg" alt="author">
+                  <h5 class="author_name">Elon Musk</h5>
+                  <span>Creaitve Businessman</span>
+                  <p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod
+                    tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At
+                    vero eos accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="glide__bullets" data-glide-el="controls[nav]">
+              <button class="glide__bullet" data-glide-dir="=0"></button>
+              <button class="glide__bullet" data-glide-dir="=1"></button>
+              <button class="glide__bullet" data-glide-dir="=2"></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>f
+  </section> -->
+
+
+  <section id="blog" class="blog_area pt-50">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <div class="section_title text-center pb-25">
+            <h4 class="title wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.2s">{{'GET_IN_TOUCH.TITLE' |
+              translate}}</h4>
+            <p class="wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.4s">{{'GET_IN_TOUCH.DESCRIPTION' |
+              translate}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="single_blog mt-30 wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.2s">
+            <div class="blog_image">
+              <img src="assets/images/blog-1.jpg" alt="blog">
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="single_blog blog_2 d-sm-flex mt-30 wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.2s">
+            <div class="blog_content media-body">
+              <h3 class="blog_title"><a href="#">{{'GET_IN_TOUCH.HEADING' | translate}}</a></h3>
+              <p> {{'GET_IN_TOUCH.HEADING_DESCRIPTION' | translate}}</p>
+              <div class="address-box">
+
+                <h3>{{'GET_IN_TOUCH.ADDRESS_HEADING' | translate}}</h3>
+
+                <div class="address-contact">
+                  <span class="fa-stack"><i class="fa fa-circle fa-stack-2x"></i><i
+                      class="fa fa-map-marker fa-stack-1x fa-inverse"></i></span>
+                  <div class="address-content">{{'GET_IN_TOUCH.ADDRESS_DESCRIPTION' | translate}}</div>
+                </div>
+
+                <div class="address-contact">
+                  <span class="fa-stack"><i class="fa fa-circle fa-stack-2x"></i><i
+                      class="fa fa-phone fa-stack-1x fa-inverse"></i></span>
+                  <div class="address-content">{{'GET_IN_TOUCH.MOBILE' | translate}}</div>
+                </div>
+
+                <div class="address-contact">
+                  <span class="fa-stack"><i class="fa fa-circle fa-stack-2x"></i><i
+                      class="fa fa-envelope-o fa-stack-1x fa-inverse"></i></span>
+                  <div class="address-content"><a href="mailto:customer@ajantagold.com">customer&#64;ajantagold.com</a>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section id="contact" class="contact_area bg_cover pt-50 pb-130"
+    style="background-image: url(assets/images/contact_bg.jpg)">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-6">
+          <div class="section_title section_title_2 text-center pb-25">
+            <h4 class="title wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.2s">{{'ORDER.TITLE' | translate}}
+            </h4>
+            <p class="wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.4s">{{'ORDER.DESCRIPTION' | translate}}
+            </p>
+          </div>
+        </div>
+      </div>
+      <form id="contact-form" [formGroup]="this._orderService.orderForm" class="wow fadeInUp" data-wow-duration="1.3s"
+        data-wow-delay="0.4s">
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="single_form">
+              <input formControlName="name" type="text" placeholder="{{'ORDER.PLACEHOLDER1.TEXT' | translate}}"
+                name="name" id="name" required>
+              <span *ngIf="isOrderFormSubmitted && this._orderService.orderForm.get('name')?.errors?.['required']"
+                class="error-message">This is mandatory</span>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="single_form">
+              <input formControlName="mobile" type="number" placeholder="{{'ORDER.PLACEHOLDER2.TEXT' | translate}}"
+                name="number" id="number" required>
+              <span *ngIf="isOrderFormSubmitted && this._orderService.orderForm.get('mobile')?.errors?.['required']"
+                class="error-message">This is mandatory</span>
+              <span *ngIf="isOrderFormSubmitted && this._orderService.orderForm.get('mobile')?.errors?.['minlength']"
+                class="error-message">Please enter valid mobile number</span>
+
+            </div>
+          </div>
+          <div class="col-lg-12">
+            <div class="single_form">
+              <textarea formControlName="orderDetails" placeholder="{{'ORDER.PLACEHOLDER3.TEXT' | translate}}"
+                name="message" id="message" required></textarea>
+              <span
+                *ngIf="isOrderFormSubmitted && this._orderService.orderForm.get('orderDetails')?.errors?.['required']"
+                class="error-message">This is mandatory</span>
+            </div>
+          </div>
+          <p class="form-message"></p>
+          <div class="col-lg-12">
+            <div class="single_form text-center">
+              <button class="main-btn" (click)="onSubmitOrderForm()" type="submit">{{'ORDER.SUBMIT_BUTTON' |
+                translate}}</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+</div>
+<footer id="footer" class="footer_area">
+  <div class="container">
+    <div class="footer_wrapper text-center d-lg-flex align-items-center justify-content-between">
+      <p class="credit">Designed and Developed by <a href="#" rel="nofollow">FutureSoft corporation</a></p>
+      <p class="credit"><a href="#" rel="nofollow">Copyright © {{currentYear}}</a></p>
+      <div class="footer_social pt-15">
+        <ul>
+          <li><a href="https://www.facebook.com/profile.php?id=100068055640621" target="_blank"><i
+                class="lni lni-facebook-original"></i></a></li>
+          <li><a href="#"><i class="lni lni-twitter-original"></i></a></li>
+          <li><a href="#"><i class="lni lni-instagram-original"></i></a></li>
+          <li><a href="#"><i class="lni lni-linkedin-original"></i></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+<a href="#" class="back-to-top"><i class="lni lni-chevron-up"></i></a>
