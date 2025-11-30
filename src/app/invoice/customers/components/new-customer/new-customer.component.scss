@@ -1,0 +1,30 @@
+.customer-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-grid {
+  display: grid;
+  gap: 15px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 768px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.customer-form .validation-error {
+  display: block !important;
+  color: #dc3545 !important; /* Bootstrap danger red */
+  font-size: 14px;
+  margin-top: 4px;
+}

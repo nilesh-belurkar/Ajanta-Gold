@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ViewSampleBillComponent } from './view-sample-bill/view-sample-bill.component';
 import { ViewBillComponent } from './view-bill/view-bill.component';
-import { CustomersComponent } from './customers/customers.component';
+import { CustomersComponent } from './customers/components/customers.component';
 import { ProductsComponent } from './products/products.component';
 import { BillingComponent } from './billing/billing.component';
 import { ReportsComponent } from './reports/reports.component';

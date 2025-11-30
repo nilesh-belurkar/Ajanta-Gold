@@ -1,0 +1,66 @@
+import { Injectable } from '@angular/core';
+import { Firestore, collection, doc, addDoc, deleteDoc, updateDoc } from '@angular/fire/firestore';
+import { collectionData, docData } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class CommonService {
+  constructor(private _firestore: Firestore) {}
+
+  /** -------------------------
+   * READ (REAL-TIME STREAM)
+   * ------------------------*/
+  getDocuments(collectionName: string): Observable<any[]> {
+    const ref = collection(this._firestore, collectionName);
+    return collectionData(ref, { idField: 'firestoreId' }) as Observable<any[]>;
+  }
+
+  getDocumentById(collectionName: string, docId: string): Observable<any> {
+    const ref = doc(this._firestore, `${collectionName}/${docId}`);
+    return docData(ref, { idField: 'firestoreId' }) as Observable<any>;
+  }
+
+  /** -------------------------
+   * CREATE
+   * Returns full object including ID
+   * ------------------------*/
+  addDoc(collectionName: string, data: any): Promise<any> {
+    const ref = collection(this._firestore, collectionName);
+    const payload = { ...data, createdAt: new Date() };
+
+    return addDoc(ref, payload).then(docRef => {
+      return { firestoreId: docRef.id, ...payload };
+    });
+  }
+
+  /** -------------------------
+   * UPDATE
+   * Returns updated object
+   * ------------------------*/
+  editDoc(collectionName: string, id: string, data: any): Promise<any> {
+    const docRef = doc(this._firestore, collectionName, id);
+    const payload = { ...data, updatedAt: new Date() };
+
+    return updateDoc(docRef, payload).then(() => {
+      return { firestoreId: id, ...payload };
+    });
+  }
+
+  /** -------------------------
+   * DELETE
+   * ------------------------*/
+  deleteDoc(collectionName: string, id: string): Promise<void> {
+    const docRef = doc(this._firestore, collectionName, id);
+    return deleteDoc(docRef);
+  }
+
+  /** -------------------------
+   * BULK CREATE
+   * returns array of created records
+   * ------------------------*/
+  addBulkCustomers(collectionName: string, customers: any[]): Promise<any[]> {
+    return Promise.all(customers.map(c => this.addDoc(collectionName, c)));
+  }
+}

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { NgScrollbar } from 'ngx-scrollbar';
 
@@ -17,6 +17,9 @@ import {
 
 import { DefaultFooterComponent, DefaultHeaderComponent } from './';
 import { navItems } from './_nav';
+import { NgxSpinnerModule, NgxSpinnerService } from 'ngx-spinner';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { CommonModule } from '@angular/common';
 
 function isOverflown(element: HTMLElement) {
   return (
@@ -37,16 +40,27 @@ function isOverflown(element: HTMLElement) {
     SidebarFooterComponent,
     SidebarToggleDirective,
     SidebarTogglerDirective,
-    ContainerComponent,
     DefaultFooterComponent,
     DefaultHeaderComponent,
     IconDirective,
     NgScrollbar,
     RouterOutlet,
     RouterLink,
-    ShadowOnScrollDirective
+    ShadowOnScrollDirective,
+    NgxSpinnerModule,
+    CommonModule
   ]
 })
-export class DefaultLayoutComponent {
+export class DefaultLayoutComponent implements OnInit, AfterViewInit {
   public navItems = [...navItems];
+  constructor(private spinner: NgxSpinnerService) { }
+  ngOnInit(): void {
+
+  }
+
+  ngAfterViewInit(): void {
+    // show spinner after DOM is ready
+
+
+  }
 }
