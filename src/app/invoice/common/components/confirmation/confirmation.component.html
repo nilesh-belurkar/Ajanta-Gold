@@ -1,0 +1,15 @@
+<c-modal [visible]="visible" backdrop="static" alignment="center">
+  <c-modal-header>
+    <h5 class="modal-title">{{ title }}</h5>
+    <button class="btn-close" (click)="cancel()"></button>
+  </c-modal-header>
+
+  <c-modal-body>
+    <p>{{ message }}</p>
+  </c-modal-body>
+
+  <c-modal-footer>
+    <button class="btn btn-secondary" (click)="cancel()">Cancel</button>
+    <button class="btn btn-danger" (click)="confirm()">Yes</button>
+  </c-modal-footer>
+</c-modal>

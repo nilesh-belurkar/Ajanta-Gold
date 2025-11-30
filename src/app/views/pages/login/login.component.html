@@ -2,45 +2,53 @@
   <c-container breakpoint="md">
     <c-row class="justify-content-center">
       <c-col lg="10" xl="8">
-        <c-card-group>
-          <c-card class="p-4">
+        <c-card-group class="login-card-group">
+          <c-card class="p-4 login-main-card">
             <c-card-body>
-              <form cForm>
+              <form cForm [formGroup]="this._loginService.loginForm">
                 <h1>Login</h1>
                 <p class="text-body-secondary">Sign In to your account</p>
-                <c-input-group class="mb-3">
+                <c-input-group>
                   <span cInputGroupText>
                     <svg cIcon name="cilUser"></svg>
                   </span>
-                  <input autoComplete="username" cFormControl placeholder="Username" />
+                  <input formControlName="email" autoComplete="email" cFormControl placeholder="Email" />
                 </c-input-group>
-                <c-input-group class="mb-4">
+                <small class="text-danger"
+                  *ngIf="this._loginService.loginForm.touched && !this._loginService.loginForm.valid">Enter
+                  Email Address</small>
+                <c-input-group class="mt-2" style="position: relative;">
                   <span cInputGroupText>
                     <svg cIcon name="cilLockLocked"></svg>
                   </span>
-                  <input
-                    autoComplete="current-password"
-                    cFormControl
-                    placeholder="Password"
-                    type="password"
-                  />
+                  <input [type]="showPassword ? 'text' : 'password'" autoComplete="current-password" cFormControl
+                    placeholder="Password" formControlName="password" style="padding-right:2.5rem;" />
+                  <span class="eye" (click)="showPassword = !showPassword">
+                    <i *ngIf="!showPassword" class="fa fa-eye" role="button"></i>
+                    <i *ngIf="showPassword" class="fa fa-eye-slash" role="button"></i>
+
+                  </span>
                 </c-input-group>
-                <c-row>
-                  <c-col xs="6">
-                    <button cButton class="px-4" color="primary">
-                      Login
-                    </button>
-                  </c-col>
+                <small class="text-danger"
+                  *ngIf="this._loginService.loginForm.touched && !this._loginService.loginForm.valid">Enter
+                  Valid Password</small>
+                <c-row class="mt-2">
+                  <c-row class="mt-2">
+                    <c-col xs="6" class="login-btn-col">
+                      <button cButton class="px-4" color="primary" (click)="login()">Login</button>
+                    </c-col>
+                  </c-row>
                 </c-row>
               </form>
             </c-card-body>
           </c-card>
-          <c-card [ngStyle]="{'minWidth.%': 44}" class="text-white bg-primary py-5">
+          <c-card [ngStyle]="{'minWidth.%': 44}" class="text-white bg-primary py-5 info-card">
             <c-card-body class="text-center">
               <div>
                 <h2>Ajanta Gold</h2>
                 <p class="login-description">
-                  Our association is occupied with handling, exchanging and wholesaling of a complete line of Industrial Chemicals. We figure out and process chemicals with high quality ingredients and compounds.
+                  Our association is occupied with handling, exchanging and wholesaling of a complete line of Industrial
+                  Chemicals. We figure out and process chemicals with high quality ingredients and compounds.
                 </p>
               </div>
             </c-card-body>

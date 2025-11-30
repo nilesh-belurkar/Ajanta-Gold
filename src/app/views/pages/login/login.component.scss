@@ -1,3 +1,65 @@
-.login-description{
-    color: #fff;
+.login-description {
+  color: #fff;
+}
+
+.eye {
+
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  z-index: 2;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* ...existing code... */
+
+.login-card-group {
+  display: flex;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+/* Mobile / small screens: stack and put right card on top */
+@media (max-width: 767.98px) {
+  .login-card-group {
+    flex-direction: column-reverse !important;
+  }
+
+  .login-card-group c-card {
+    min-width: auto !important;
+    width: 100% !important;
+  }
+
+  /* Optional: spacing for stacked cards */
+  .login-card-group c-card+c-card {
+    margin-top: 0.75rem;
+  }
+
+  .login-btn-col {
+    width: 100% !important;
+    display: flex;
+    justify-content: center;
+    padding-left: 0;
+    /* optional */
+    padding-right: 0;
+    /* optional */
+  }
+
+  .login-btn-col button[cButton] {
+    width: auto;
+    /* keep button fit its content */
+  }
+}
+
+/* Desktop: ensure side-by-side */
+@media (min-width: 768px) {
+  .login-card-group c-card {
+    width: auto;
+  }
 }
