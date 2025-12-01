@@ -1,0 +1,90 @@
+<div class="customer-actions">
+  <c-input-group class="customer-input">
+    <input aria-label="Search customer name" cFormControl placeholder="Search customer name"
+      [formControl]="searchTerm" />
+    <span role="button" cInputGroupText class="fs-5" (click)="resetSearch()">&times;</span>
+  </c-input-group>
+</div>
+
+<c-modal [visible]="showModal" backdrop="static" size="lg" alignment="center">
+  <c-modal-header>
+    <h5 class="modal-title">Order Details</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()"></button>
+  </c-modal-header>
+  <c-modal-body>
+    <ng-container #modalHost></ng-container>
+  </c-modal-body>
+</c-modal>
+
+<div *ngIf="paginatedOrderList.length" class="table-responsive">
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Sr No</th>
+        <th>Order ID</th>
+        <th>Name</th>
+        <th>Date</th>
+        <th>Product Details</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of paginatedOrderList; let i = index">
+        <th scope="row">{{ i + 1 }}</th>
+        <td>{{order.firestoreId}}</td>
+        <td>{{order.name}}</td>
+        <td>{{order.createdAt.toDate() | date:'dd/MMM/yyyy' }}</td>
+        <td>
+          <button cButton color="warning" class="text-white " (click)="viewOrder(order)"> <i class="fa fa-eye mx-1"
+              role="button"></i>View Order</button>
+
+        </td>
+        <td>
+          <c-dropdown>
+            <button cButton cDropdownToggle [color]="order.status === 'Done' ? 'success' : 'danger'" size="sm"
+              class="text-white">
+              {{ order.status }}
+            </button>
+            <ul cDropdownMenu>
+              <li>
+                <button cDropdownItem (click)="onStatusChange(order, 'Pending')">
+                  Pending
+                </button>
+              </li>
+
+              <li>
+                <button cDropdownItem (click)="onStatusChange(order, 'Done')">
+                  Done
+                </button>
+              </li>
+            </ul>
+
+          </c-dropdown>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<ul *ngIf="paginatedOrderList.length" class="pagination justify-content-center mt-3">
+  <li class="page-item" [class.disabled]="currentPage === 1">
+    <button class="page-link" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1"
+      aria-label="Previous">
+      <span aria-hidden="true">&laquo;</span>
+    </button>
+  </li>
+
+  <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index"
+    [class.active]="currentPage === i + 1">
+    <button class="page-link" (click)="onPageChange(i + 1)">
+      {{ i + 1 }}
+    </button>
+  </li>
+
+  <li class="page-item" [class.disabled]="currentPage === totalPages || totalPages === 0">
+    <button class="page-link" (click)="onPageChange(currentPage + 1)"
+      [disabled]="currentPage === totalPages || totalPages === 0" aria-label="Next">
+      <span aria-hidden="true">&raquo;</span>
+    </button>
+  </li>
+</ul>

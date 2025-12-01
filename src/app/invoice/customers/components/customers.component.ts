@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, ComponentRef, ViewContainerRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { CUSTOMER_LIST_COLLECTION_NAME } from '../../common/constants/constant';
 import { CommonService } from '../../common/services/common.service';

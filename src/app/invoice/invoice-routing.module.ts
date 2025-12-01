@@ -4,12 +4,11 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ViewSampleBillComponent } from './view-sample-bill/view-sample-bill.component';
 import { ViewBillComponent } from './view-bill/view-bill.component';
 import { CustomersComponent } from './customers/components/customers.component';
-import { ProductsComponent } from './products/products.component';
 import { BillingComponent } from './billing/billing.component';
 import { ReportsComponent } from './reports/reports.component';
-import { OrdersComponent } from './orders/orders.component';
+import { OrdersComponent } from './orders/components/orders.component';
 import { DefaultLayoutComponent } from '../layout/default-layout';
-import { LoginComponent } from '../views/pages/login/login.component';
+import { ProductsComponent } from './products/components/products.component';
 
 const routes: Routes = [
   {

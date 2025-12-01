@@ -1,10 +1,14 @@
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { TranslateService, TranslatePipe } from '@ngx-translate/core';
-import { OrderService } from './services/order.service';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { NgbCarouselModule, NgbCarousel, NgbSlideEvent, NgbSlideEventSource } from '@ng-bootstrap/ng-bootstrap';
 import { RouterModule } from '@angular/router';
+import { CommonService } from '../invoice/common/services/common.service';
+import { ORDER_LIST } from '../invoice/common/constants/constant';
+import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
+
 
 
 @Component({
@@ -13,9 +17,12 @@ import { RouterModule } from '@angular/router';
   templateUrl: './guest.component.html',
   styleUrl: './guest.component.scss'
 })
-export class GuestComponent {
+export class GuestComponent implements OnInit {
   private _translateService = inject(TranslateService);
-  public _orderService = inject(OrderService);
+  public _commonService = inject(CommonService);
+  public _toastrService = inject(ToastrService);
+  public _formBuilder = inject(FormBuilder);
+
   currentYear: string = '';
   isOrderFormSubmitted: boolean = false;
   currentlanguage: string = 'en';
@@ -26,6 +33,7 @@ export class GuestComponent {
   pauseOnFocus: boolean = true;
   images = [1, 2, 3].map((n) => `../../../assets/slider/${n}.jpg`);
   @ViewChild('carousel', { static: true }) carousel!: NgbCarousel;
+  orderForm!: FormGroup;
 
   constructor() {
     this._translateService.addLangs(['en', 'hi', 'mr']);
@@ -37,7 +45,34 @@ export class GuestComponent {
     this._translateService.use(lang);
   }
 
-  onSubmitOrderForm() { }
+  ngOnInit(): void {
+    this.initOrderForm();
+  }
+
+  initOrderForm(): void {
+    this.orderForm = this._formBuilder.group({
+      name: ['', Validators.required],
+      mobile: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
+      orderDetails: ['', [Validators.required, Validators.minLength(5)]],
+      status: ['Pending'],
+    });
+  }
+
+
+  onSubmitOrderForm() {
+    this.isOrderFormSubmitted = true;
+    if (this.orderForm.valid) {
+      this._commonService.addDoc(ORDER_LIST, this.orderForm.value).then(() => {
+        this._toastrService.success('Order placed successfully', 'Success');
+        this.orderForm.reset({
+          status: 'Pending'
+        });
+        this.isOrderFormSubmitted = false;
+      }).catch((error) => {
+        alert('Error submitting order: ' + error);
+      });
+    }
+  }
 
   onSlide(slideEvent: NgbSlideEvent) {
     if (this.unpauseOnArrow && slideEvent.paused &&
@@ -56,5 +91,11 @@ export class GuestComponent {
       this.carousel.pause();
     }
     this.paused = !this.paused;
+  }
+
+  allowOnlyNumbers(event: KeyboardEvent) {
+    if (!/[0-9]/.test(event.key)) {
+      event.preventDefault();
+    }
   }
 }
