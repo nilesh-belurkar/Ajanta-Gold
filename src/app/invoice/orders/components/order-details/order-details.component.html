@@ -1,0 +1,15 @@
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th *ngFor="let col of columns">{{ col.label }}</th>
+    </tr>
+  </thead>
+  <tbody>
+     <tr *ngFor="let row of rows">
+          <td *ngFor="let col of columns">
+            {{ row[col.key] }}
+          </td>
+        </tr>
+  </tbody>
+</table>
+

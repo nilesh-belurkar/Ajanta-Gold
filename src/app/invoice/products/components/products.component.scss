@@ -1,0 +1,61 @@
+.table-responsive {
+  overflow-x: auto; // Allows horizontal scrolling
+  -webkit-overflow-scrolling: touch; // Smooth scrolling on iOS
+
+  // Hide specific columns on mobile
+  @media (max-width: 600px) {
+
+    th:nth-child(3),
+    td:nth-child(4){
+      display: none; // Hide these columns
+    }
+
+    // Add vertical space between buttons on mobile
+    .button {
+      margin-bottom: 0.5rem; // Adjust the margin as needed
+      width: 100%; // Ensure buttons take full width
+    }
+
+    // Hide pagination text on mobile
+    .page-link {
+      span {
+        display: none; // Hide text
+      }
+    }
+  }
+
+  // Add horizontal space between buttons on larger screens
+  @media (min-width: 601px) {
+    .button {
+      margin-right: 1rem; // Add horizontal space between buttons
+      width: auto; // Reset width to auto for larger screens
+    }
+  }
+}
+
+.product-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.product-actions button {
+  flex: 0 0 auto;
+}
+
+.product-input {
+  flex: 1;
+  min-width: 220px;
+}
+
+/* Mobile behavior */
+@media (max-width: 768px) {
+  .product-actions {
+    flex-direction: column;
+  }
+
+  .product-input {
+    width: 100%;
+  }
+}

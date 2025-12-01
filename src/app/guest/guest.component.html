@@ -55,11 +55,13 @@
       (slide)="onSlide($event)">
       <ng-template ngbSlide *ngFor="let img of images; index as i">
         <div class="carousel-caption">
-          <h5 class="hero_title wow fadeInUp text-white disclaimer" data-wow-duration="1.3s" data-wow-delay="0.2s">{{'HOME.DISCLAIMER' | translate}}</h5>
+          <h5 class="hero_title wow fadeInUp text-white disclaimer" data-wow-duration="1.3s" data-wow-delay="0.2s">
+            {{'HOME.DISCLAIMER' | translate}}</h5>
           <h1 class="hero_title wow fadeInUp" data-wow-duration="1.3s" data-wow-delay="0.2s">{{'HOME.TITLE' |
             translate}}
           </h1>
-          <p class="wow fadeInUp description" data-wow-duration="1.3s" data-wow-delay="0.5s">{{'HOME.DESCRIPTION' | translate}}
+          <p class="wow fadeInUp description" data-wow-duration="1.3s" data-wow-delay="0.5s">{{'HOME.DESCRIPTION' |
+            translate}}
           </p>
         </div>
         <img class="w-100 h-40" [src]="img" alt="My image {{i + 1}} description">
@@ -303,34 +305,35 @@
           </div>
         </div>
       </div>
-      <form id="contact-form" [formGroup]="this._orderService.orderForm" class="wow fadeInUp" data-wow-duration="1.3s"
+      <form id="contact-form" [formGroup]="orderForm" class="wow fadeInUp" data-wow-duration="1.3s"
         data-wow-delay="0.4s">
         <div class="row">
           <div class="col-lg-6">
             <div class="single_form">
               <input formControlName="name" type="text" placeholder="{{'ORDER.PLACEHOLDER1.TEXT' | translate}}"
                 name="name" id="name" required>
-              <span *ngIf="isOrderFormSubmitted && this._orderService.orderForm.get('name')?.errors?.['required']"
+              <span *ngIf="isOrderFormSubmitted && this.orderForm.get('name')?.errors?.['required']"
                 class="error-message">This is mandatory</span>
             </div>
           </div>
           <div class="col-lg-6">
             <div class="single_form">
               <input formControlName="mobile" type="number" placeholder="{{'ORDER.PLACEHOLDER2.TEXT' | translate}}"
-                name="number" id="number" required>
-              <span *ngIf="isOrderFormSubmitted && this._orderService.orderForm.get('mobile')?.errors?.['required']"
-                class="error-message">This is mandatory</span>
-              <span *ngIf="isOrderFormSubmitted && this._orderService.orderForm.get('mobile')?.errors?.['minlength']"
-                class="error-message">Please enter valid mobile number</span>
+                maxlength="10" (keypress)="allowOnlyNumbers($event)" name="number" id="number" required>
+              <span *ngIf="isOrderFormSubmitted && orderForm.get('mobile')?.errors?.['required']" class="error-message">
+                This is mandatory
+              </span>
 
+              <span *ngIf="isOrderFormSubmitted && orderForm.get('mobile')?.errors?.['pattern']" class="error-message">
+                Please enter a valid 10-digit mobile number
+              </span>
             </div>
           </div>
           <div class="col-lg-12">
             <div class="single_form">
               <textarea formControlName="orderDetails" placeholder="{{'ORDER.PLACEHOLDER3.TEXT' | translate}}"
                 name="message" id="message" required></textarea>
-              <span
-                *ngIf="isOrderFormSubmitted && this._orderService.orderForm.get('orderDetails')?.errors?.['required']"
+              <span *ngIf="isOrderFormSubmitted && this.orderForm.get('orderDetails')?.errors?.['required']"
                 class="error-message">This is mandatory</span>
             </div>
           </div>

@@ -1,0 +1,81 @@
+.table-responsive {
+  overflow-x: auto; // Allows horizontal scrolling
+  -webkit-overflow-scrolling: touch; // Smooth scrolling on iOS
+
+  // Hide specific columns on mobile
+  @media (max-width: 768px) {
+
+    /* Hide Order ID (1st column) */
+    table tr th:nth-child(1),
+    table tr td:nth-child(1) {
+      display: none !important;
+    }
+
+    /* Hide Actions (2nd column) */
+    table tr th:nth-child(2),
+    table tr td:nth-child(2) {
+      display: none !important;
+    }
+
+    /* Hide Actions (6th column) */
+    table tr th:nth-child(6),
+    table tr td:nth-child(6) {
+      display: none !important;
+    }
+
+    /* Optional: Smaller font/buttons on mobile */
+    table {
+      font-size: 14px;
+    }
+
+    button {
+      padding: 6px 10px;
+      font-size: 13px;
+    }
+  }
+
+
+  // Add horizontal space between buttons on larger screens
+  @media (min-width: 601px) {
+    .button {
+      margin-right: 1rem; // Add horizontal space between buttons
+      width: auto; // Reset width to auto for larger screens
+    }
+  }
+}
+
+.customer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.customer-actions button {
+  flex: 0 0 auto;
+}
+
+.customer-input {
+  flex: 1;
+  min-width: 220px;
+}
+
+/* Mobile behavior */
+@media (max-width: 768px) {
+  .customer-actions {
+    flex-direction: column;
+  }
+
+  .customer-input {
+    width: 100%;
+  }
+}
+
+.c-dropdown-menu {
+  position: absolute !important;
+  z-index: 9999 !important;
+}
+
+.table-responsive {
+  overflow: visible !important;
+}

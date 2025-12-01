@@ -1,0 +1,46 @@
+<form [formGroup]="productForm" cForm class="product-form">
+
+  <div class="form-grid">
+    <input cFormControl type="hidden" formControlName="firestoreId" />
+    <!-- Name -->
+    <div>
+      <c-input-group>
+        <span cInputGroupText>Name</span>
+        <input type="text" cFormControl formControlName="productName" placeholder="Enter product name"
+          [class.is-invalid]="productForm.get('productName')?.invalid && (productForm.get('productName')?.touched || isFormSubmitted)">
+      </c-input-group>
+      <small class="validation-error"
+        *ngIf="productForm.get('productName')?.invalid && (productForm.get('productName')?.touched || isFormSubmitted)">
+        product Name is required.
+      </small>
+    </div>
+
+    <!-- Address -->
+    <div>
+      <c-input-group>
+        <span cInputGroupText>price</span>
+        <input type="text" cFormControl formControlName="price" placeholder="Enter price"
+          [class.is-invalid]="productForm.get('price')?.invalid && (productForm.get('price')?.touched || isFormSubmitted)">
+      </c-input-group>
+      <small class="validation-error"
+        *ngIf="productForm.get('price')?.invalid && (productForm.get('price')?.touched || isFormSubmitted)">
+        price is required.
+      </small>
+    </div>
+
+    <!-- Mobile -->
+    <div>
+      <c-input-group>
+        <span cInputGroupText>Hsn Code</span>
+        <input type="text" cFormControl formControlName="hsnCode" placeholder="Enter hsnCode number">
+      </c-input-group>
+    </div>
+   
+  </div>
+
+  <div class="actions">
+    <button cButton color="primary" class="text-white" (click)="save()">Save</button>
+    <button cButton color="secondary" type="button" (click)="clear()">Clear</button>
+  </div>
+
+</form>
