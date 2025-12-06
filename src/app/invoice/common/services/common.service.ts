@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, doc, addDoc, deleteDoc, updateDoc } from '@angular/fire/firestore';
+import { Firestore, collection, doc, addDoc, deleteDoc, updateDoc, orderBy, query, limit } from '@angular/fire/firestore';
 import { collectionData, docData } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
@@ -7,15 +7,29 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class CommonService {
-  constructor(private _firestore: Firestore) {}
+  constructor(private _firestore: Firestore) { }
 
   /** -------------------------
    * READ (REAL-TIME STREAM)
    * ------------------------*/
   getDocuments(collectionName: string): Observable<any[]> {
     const ref = collection(this._firestore, collectionName);
-    return collectionData(ref, { idField: 'firestoreId' }) as Observable<any[]>;
+    return collectionData(ref, { idField: '$key' }) as Observable<any[]>;
   }
+
+
+  getLastGeneratedBill(collectionName: string) {
+    const ref = collection(this._firestore, collectionName);
+    const q = query(ref, orderBy('createdAt', 'desc'), limit(1));
+    return collectionData(q, { idField: '$key' }) as Observable<any[]>;
+  }
+
+
+  // getDocuments(collectionName: string): Observable<any[]> {
+  //   const ref = collection(this._firestore, collectionName);
+  //   const q = query(ref, orderBy('createdAt', 'desc'));
+  //   return collectionData(q, { idField: 'firestoreId' }) as Observable<any[]>;
+  // }
 
   getDocumentById(collectionName: string, docId: string): Observable<any> {
     const ref = doc(this._firestore, `${collectionName}/${docId}`);

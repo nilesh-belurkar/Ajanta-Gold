@@ -17,6 +17,7 @@ import { NgxSpinnerService } from 'ngx-spinner';
 import { Customer } from '../models/customer.model';
 import { debounceTime, take } from 'rxjs/operators';
 import { ConfirmationComponent } from '../../common/components/confirmation/confirmation.component';
+import { PaginationUtilService } from '../../common/services/pagination-util.service';
 
 @Component({
   selector: 'app-customers',
@@ -44,7 +45,7 @@ export class CustomersComponent implements OnInit {
   isFormSubmitted: boolean = false;
   searchTerm = new FormControl('');
   currentPage: number = 1;
-  pageSize: number = 10;
+  pageSize: number = 0;
   totalItems: number = 0;
 
   showModal: boolean = false;
@@ -57,10 +58,12 @@ export class CustomersComponent implements OnInit {
   constructor(
     private _commonService: CommonService,
     private _formBuilder: FormBuilder,
-    private _spinner: NgxSpinnerService
+    private _spinner: NgxSpinnerService,
+    private _paginationService: PaginationUtilService
   ) { }
 
   ngOnInit(): void {
+    this.pageSize = window.innerWidth <= 768 ? 5 : 10;
     this.initCustomerForm();
     this.loadCustomers();
     this.searchCustomers();
@@ -82,7 +85,7 @@ export class CustomersComponent implements OnInit {
 
   initCustomerForm(): void {
     this.customerForm = this._formBuilder.group({
-      firestoreId: [null],
+      $key: [null],
       customerName: ['', Validators.required],
       address: ['', Validators.required],
       mobile: ['', [Validators.minLength(10), Validators.maxLength(10)]],
@@ -158,11 +161,18 @@ export class CustomersComponent implements OnInit {
 
     const sub = this.confirmModal.confirmed.subscribe((result) => {
       if (result) {
-        this._commonService.deleteDoc(CUSTOMER_LIST_COLLECTION_NAME, customer.firestoreId);
+        this._commonService.deleteDoc(CUSTOMER_LIST_COLLECTION_NAME, customer.$key);
         this.loadCustomers(); // refresh list
       }
 
       sub.unsubscribe(); // avoid leak
     });
+  }
+
+
+  get visiblePages(): number[] {
+    const isMobile = window.innerWidth <= 768;
+    const maxPages = isMobile ? 5 : 10;
+    return this._paginationService.getVisiblePages(this.currentPage, this.totalPages, maxPages);
   }
 }

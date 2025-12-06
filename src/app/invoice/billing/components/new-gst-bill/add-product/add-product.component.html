@@ -1,0 +1,77 @@
+<form [formGroup]="addProductFrom" cForm class="add-product-form">
+  <section>
+    <div class="form-grid">
+      <div>
+        <c-input-group>
+          <span cInputGroupText>Product Name</span>
+          <input type="text" cFormControl formControlName="productName" placeholder="Enter product name" (input)="onProductInput($event)"
+            [class.is-invalid]="addProductFrom.get('productName')?.invalid && (addProductFrom.get('productName')?.touched || isFormSubmitted)">
+        </c-input-group>
+         <ul *ngIf="showSuggestions" class="autocomplete-list">
+          <li *ngFor="let product of filteredProductList" (click)="selectProduct(product)">
+            <strong>{{ product.name }}</strong><br />
+            <small>Price - {{ product.price }} | HSN Code -  {{ product.HSNCode }}</small>
+          </li>
+        </ul>
+        <small class="validation-error"
+          *ngIf="addProductFrom.get('name')?.invalid && (addProductFrom.get('name')?.touched || isFormSubmitted)">
+          Product Name is required.
+        </small>
+      </div>
+
+      <div>
+        <c-input-group>
+          <span cInputGroupText>Product Quantity</span>
+          <input type="number" cFormControl formControlName="productQty" placeholder="Enter product quantity"
+            [class.is-invalid]="addProductFrom.get('productQty')?.invalid && (addProductFrom.get('productQty')?.touched || isFormSubmitted)">
+        </c-input-group>
+        <small class="validation-error"
+          *ngIf="addProductFrom.get('productQty')?.invalid && (addProductFrom.get('productQty')?.touched || isFormSubmitted)">
+          Product quantity is Required.
+        </small>
+      </div>
+      <div>
+        <c-input-group>
+          <span cInputGroupText>Product Price</span>
+          <input type="number" cFormControl formControlName="productPrice" placeholder="Enter product price" [class.is-invalid]="addProductFrom.get('productPrice')?.invalid && (addProductFrom.get('productPrice')?.touched || isFormSubmitted)">
+        </c-input-group>
+        <small class="validation-error"
+          *ngIf="addProductFrom.get('productPrice')?.invalid && (addProductFrom.get('productPrice')?.touched || isFormSubmitted)">
+          Product price is Required.
+        </small>
+      </div>
+
+      <div>
+        <c-input-group>
+          <span cInputGroupText>HSN Code</span>
+          <input type="number" cFormControl formControlName="HSNCode" placeholder="Enter HSN Code">
+        </c-input-group>
+      </div>
+
+      <div>
+        <c-input-group>
+          <span cInputGroupText>Batch Number</span>
+          <input type="number" cFormControl formControlName="batchNumber" placeholder="Enter batch number">
+        </c-input-group>
+      </div>
+      <div>
+        <c-input-group>
+          <span cInputGroupText>Batch Number</span>
+          <input type="text" cFormControl formControlName="expiryDate" placeholder="Enter expiry date" [bsConfig]="bsConfig" bsDatepicker>
+        </c-input-group>
+      </div>
+      <div>
+        <c-input-group>
+          <span cInputGroupText>Free Goods</span>
+          <input type="number" cFormControl formControlName="freeGoods" placeholder="Enter free goods">
+        </c-input-group>
+      </div>
+     
+    </div>
+  </section>
+  <div class="actions">
+    <button cButton color="primary" class="text-white" (click)="save()">Save</button>
+    <button cButton color="secondary" type="button" (click)="clear()">Clear</button>
+  </div>
+
+</form>

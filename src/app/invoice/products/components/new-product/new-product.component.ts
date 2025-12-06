@@ -3,11 +3,12 @@ import { Product } from '../../models/product.model';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
-import { PRODUCT_LIST_COLLECTION_NAME } from 'src/app/invoice/common/constants/constant';
-import { CommonService } from 'src/app/invoice/common/services/common.service';
+
 import { ButtonDirective, FormControlDirective, InputGroupComponent, InputGroupTextDirective, ModalModule } from '@coreui/angular';
 import { IconModule } from '@coreui/icons-angular';
 import { CommonModule } from '@angular/common';
+import { CommonService } from '../../../common/services/common.service';
+import { PRODUCT_LIST_COLLECTION_NAME } from '../../../common/constants/constant';
 
 
 @Component({
@@ -43,17 +44,17 @@ export class NewProductComponent {
       productName: ['', Validators.required],
       price: ['', Validators.required],
       hsnCode: [''],
-      firestoreId: [''],
+      $key: [''],
     });
   }
   ngOnInit(): void {
     this.initProductForm();
     if (this.product) {
       this.productForm.patchValue({
-        productName: this.product.productName,
+        productName: this.product.name,
         price: this.product.price,
-        hsnCode: this.product.hsnCode,
-        firestoreId: this.product.firestoreId,
+        hsnCode: this.product.HSNCode,
+        $key: this.product.$key,
       });
     }
   }
@@ -67,7 +68,7 @@ export class NewProductComponent {
 
     this._spinner.show();
     const productDetails: Product = this.productForm.value;
-    if (productDetails.firestoreId) {
+    if (productDetails.$key) {
       this.editProduct(productDetails);
     } else {
       this.addProduct(productDetails);
@@ -98,12 +99,12 @@ export class NewProductComponent {
   }
 
   editProduct(productDetails: Product) {
-    if (!productDetails.firestoreId) return;
+    if (!productDetails.$key) return;
 
-    this._commonService.editDoc(PRODUCT_LIST_COLLECTION_NAME, productDetails.firestoreId, {
-      productName: productDetails.productName,
+    this._commonService.editDoc(PRODUCT_LIST_COLLECTION_NAME, productDetails.$key, {
+      productName: productDetails.name,
       price: productDetails.price,
-      hsnCode: productDetails.hsnCode,
+      hsnCode: productDetails.HSNCode,
     });
     this._spinner.hide();
     this.saved.emit(productDetails);

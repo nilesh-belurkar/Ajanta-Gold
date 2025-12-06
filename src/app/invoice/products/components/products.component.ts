@@ -17,6 +17,7 @@ import {
   ModalModule,
 } from '@coreui/angular';
 import { NewProductComponent } from './new-product/new-product.component';
+import { PaginationUtilService } from '../../common/services/pagination-util.service';
 @Component({
   selector: 'app-products',
   imports: [
@@ -42,7 +43,7 @@ export class ProductsComponent {
   isFormSubmitted: boolean = false;
   searchTerm = new FormControl('');
   currentPage: number = 1;
-  pageSize: number = 10;
+  pageSize: number = 0;
   totalItems: number = 0;
 
   showModal: boolean = false;
@@ -55,10 +56,13 @@ export class ProductsComponent {
   constructor(
     private _commonService: CommonService,
     private _formBuilder: FormBuilder,
-    private _spinner: NgxSpinnerService
+    private _spinner: NgxSpinnerService,
+    private _paginationService: PaginationUtilService
+
   ) { }
 
   ngOnInit(): void {
+    this.pageSize = window.innerWidth <= 768 ? 5 : 10;
     this.initProductForm();
     this.loadProducts();
     this.searchProduct();
@@ -80,7 +84,7 @@ export class ProductsComponent {
 
   initProductForm(): void {
     this.productForm = this._formBuilder.group({
-      firestoreId: [null],
+      $key: [null],
       productcustomerName: ['', Validators.required],
       address: ['', Validators.required],
       mobile: ['', [Validators.minLength(10), Validators.maxLength(10)]],
@@ -90,7 +94,7 @@ export class ProductsComponent {
 
   filterProducts(searchTerm: string | null) {
     const term = (searchTerm ?? '').toLowerCase(); // safe null handling
-    this.filteredProductList = this.productList.filter(c => c.productName.toLowerCase().includes(term));
+    this.filteredProductList = this.productList.filter(c => c.name.toLowerCase().includes(term));
     this.totalItems = this.filteredProductList.length;
     this.updatePagination();
   }
@@ -152,15 +156,21 @@ export class ProductsComponent {
   }
 
   async deleteProduct(product: Product) {
-    this.confirmModal.open(`Are you sure you want delete "${product.productName}"?`, 'Delete Confirmation');
+    this.confirmModal.open(`Are you sure you want delete "${product.name}"?`, 'Delete Confirmation');
 
     const sub = this.confirmModal.confirmed.subscribe((result) => {
       if (result) {
-        this._commonService.deleteDoc(PRODUCT_LIST_COLLECTION_NAME, product.firestoreId);
+        this._commonService.deleteDoc(PRODUCT_LIST_COLLECTION_NAME, product.$key);
         this.loadProducts(); // refresh list
       }
 
       sub.unsubscribe(); // avoid leak
     });
+  }
+
+   get visiblePages(): number[] {
+    const isMobile = window.innerWidth <= 768;
+    const maxPages = isMobile ? 5 : 10;
+    return this._paginationService.getVisiblePages(this.currentPage, this.totalPages, maxPages);
   }
 }
