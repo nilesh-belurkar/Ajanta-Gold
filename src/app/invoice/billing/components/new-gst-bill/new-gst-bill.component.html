@@ -1,0 +1,122 @@
+<form [formGroup]="gstBillForm" cForm class="gst-bill-form">
+  <section>
+    <div class="form-grid">
+      <input cFormControl formControlName="$key" type="hidden" />
+      <div style="position: relative;">
+        <c-input-group>
+          <span cInputGroupText>Customer Name</span>
+          <input type="text" cFormControl formControlName="customerName" placeholder="Enter customer name"
+            (input)="onCustomerInput($event)"
+            [class.is-invalid]="gstBillForm.get('customerName')?.invalid && (gstBillForm.get('customerName')?.touched || isFormSubmitted)">
+        </c-input-group>
+
+        <!-- Autocomplete dropdown -->
+        <ul *ngIf="showSuggestions" class="autocomplete-list">
+          <li *ngFor="let customer of filteredCustomerList" (click)="selectCustomer(customer)">
+            <strong>{{ customer.name }}</strong><br />
+            <small>Mobile - +91-{{ customer.mobile }} | GST - {{ customer.GST }}</small>
+          </li>
+        </ul>
+
+        <small class="validation-error"
+          *ngIf="gstBillForm.get('customerName')?.invalid && (gstBillForm.get('customerName')?.touched || isFormSubmitted)">
+          Customer Name is required.
+        </small>
+      </div>
+      <div>
+        <c-input-group>
+          <span cInputGroupText>Bill Number</span>
+          <input type="number" cFormControl formControlName="billNumber" placeholder="Enter bill number"
+            [class.is-invalid]="gstBillForm.get('billNumber')?.invalid && (gstBillForm.get('billNumber')?.touched || isFormSubmitted)">
+        </c-input-group>
+        <small class="validation-error"
+          *ngIf="gstBillForm.get('billNumber')?.invalid && (gstBillForm.get('billNumber')?.touched || isFormSubmitted)">
+          Bill number is required.
+        </small>
+      </div>
+
+      <div>
+        <c-input-group>
+          <span cInputGroupText>Bill Date</span>
+          <input type="text" cFormControl formControlName="billDate" [bsConfig]="bsConfig" bsDatepicker
+            placeholder="Select bill date" />
+        </c-input-group>
+        <small class="validation-error"
+          *ngIf="gstBillForm.get('billDate')?.invalid && (gstBillForm.get('billDate')?.touched || isFormSubmitted)">
+          Bill date is required.
+        </small>
+      </div>
+
+      <div>
+        <c-input-group>
+          <span cInputGroupText>Vehicle Number</span>
+          <input type="text" cFormControl formControlName="vehicleNumber" placeholder="Enter vehicle number">
+        </c-input-group>
+      </div>
+
+      <div>
+        <c-input-group>
+          <span cInputGroupText>Discount</span>
+          <input type="number" cFormControl formControlName="discount" placeholder="Enter discount">
+        </c-input-group>
+      </div>
+    </div>
+  </section>
+
+  <button cButton color="info" class="text-white" (click)="addProduct()">Add Product</button>
+  <section>
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Sr No</th>
+            <th>Product Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>HSN Code</th>
+            <th>Batch No</th>
+            <th>Expiry Date</th>
+            <th>Free Goods</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody *ngIf="productList.length">
+          <tr *ngFor="let product of productList; let i =index">
+            <th scope="row">{{ i + 1 }}</th>
+            <td title="{{ product.productName }}">{{ product.productName }}
+              <br>
+              <small *ngIf="product.isDuplicate" class="text-danger fw-bold">Duplicate product please remove one</small>
+            </td>
+            <td title="{{ product.productQty }}">{{ product.productQty }}</td>
+            <td title="{{ product.productPrice }}">{{ product.productPrice }}</td>
+            <td title="{{ product.HSNCode }}">{{ product.HSNCode }}</td>
+            <td title="{{ product.batchNumber }}">{{ product.batchNumber }}</td>
+            <td title="{{ product.expiryDate }}">{{ product.expiryDate }}</td>
+            <td title="{{ product.freeGoods }}">{{ product.freeGoods }}</td>
+            <td>
+              <button cButton color="danger" class="text-white button" (click)="deleteProduct(i)"> <svg cIcon
+                  name="cil-trash" title="Delete product details" class="mx-1"></svg>Delete</button>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="actions">
+    <button cButton color="primary" class="text-white" (click)="save()"  [disabled]="gstBillForm.invalid || hasDuplicate">Save</button>
+    <button cButton color="secondary" type="button" (click)="clear()">Clear</button>
+  </div>
+
+</form>
+
+<c-modal [visible]="showModal" backdrop="static" size="lg" alignment="center">
+  <c-modal-header>
+    <h5 class="modal-title">Add Product</h5>
+    <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()">
+    </button>
+  </c-modal-header>
+
+  <c-modal-body>
+    <ng-container #modalHost></ng-container>
+  </c-modal-body>
+</c-modal>

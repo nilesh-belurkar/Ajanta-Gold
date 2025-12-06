@@ -31,13 +31,12 @@
     <tbody>
       <tr *ngFor="let order of paginatedOrderList; let i = index">
         <th scope="row">{{ i + 1 }}</th>
-        <td>{{order.firestoreId}}</td>
+        <td>{{order.$key}}</td>
         <td>{{order.name}}</td>
-        <td>{{order.createdAt.toDate() | date:'dd/MMM/yyyy' }}</td>
+        <td>{{order?.createdAt?.toDate() | date:'dd/MMM/yyyy' }}</td>
         <td>
           <button cButton color="warning" class="text-white " (click)="viewOrder(order)"> <i class="fa fa-eye mx-1"
               role="button"></i>View Order</button>
-
         </td>
         <td>
           <c-dropdown>

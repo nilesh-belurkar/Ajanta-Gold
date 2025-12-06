@@ -1,8 +1,8 @@
 export interface Customer {
-  firestoreId: string;
+  $key: string;
   name: string;
   address: string;
   mobile: number;
-  gst: string;
+  GST: string;
   date?: number;
 }

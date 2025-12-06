@@ -33,9 +33,9 @@
     <tbody>
       <tr *ngFor="let product of paginatedProductList; let i = index">
         <th scope="row">{{ i + 1 }}</th>
-        <td title="{{ product.productName }}">{{ product.productName }}</td>
+        <td title="{{ product.name }}">{{ product.name }}</td>
         <td title="{{ product.price }}">{{ product.price }}</td>
-        <td title="{{ product.hsnCode }}">{{ product.hsnCode }}</td>
+        <td title="{{ product.HSNCode }}">{{ product.HSNCode }}</td>
 
         <td>
           <button cButton color="warning" class="text-white button" (click)="editProduct(product)"> <svg cIcon
@@ -48,27 +48,32 @@
   </table>
 </div>
 
-<ul  *ngIf="paginatedProductList.length" class="pagination justify-content-center mt-3">
+
+<ul *ngIf="paginatedProductList.length" class="pagination justify-content-center mt-3">
+
   <li class="page-item" [class.disabled]="currentPage === 1">
-    <button class="page-link" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1"
-      aria-label="Previous">
-      <span aria-hidden="true">&laquo;</span>
-    </button>
+    <button class="page-link" (click)="onPageChange(currentPage - 1)">Prev</button>
   </li>
 
-  <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index"
-    [class.active]="currentPage === i + 1">
-    <button class="page-link" (click)="onPageChange(i + 1)">
-      {{ i + 1 }}
-    </button>
+  <li *ngIf="visiblePages[0] > 1" class="page-item disabled">
+    <span class="page-link">...</span>
   </li>
 
-  <li class="page-item" [class.disabled]="currentPage === totalPages || totalPages === 0">
-    <button class="page-link" (click)="onPageChange(currentPage + 1)"
-      [disabled]="currentPage === totalPages || totalPages === 0" aria-label="Next">
-      <span aria-hidden="true">&raquo;</span>
-    </button>
+  <li class="page-item"
+      *ngFor="let page of visiblePages"
+      [class.active]="currentPage === page">
+    <button class="page-link" (click)="onPageChange(page)">{{ page }}</button>
   </li>
+
+  <li *ngIf="visiblePages[visiblePages.length - 1] < totalPages" class="page-item disabled">
+    <span class="page-link">...</span>
+  </li>
+
+  <li class="page-item" [class.disabled]="currentPage === totalPages">
+    <button class="page-link" (click)="onPageChange(currentPage + 1)">Next</button>
+  </li>
+
 </ul>
+
 
 <app-confirmation #confirmModal></app-confirmation>

@@ -1,7 +1,7 @@
 <form [formGroup]="productForm" cForm class="product-form">
 
   <div class="form-grid">
-    <input cFormControl type="hidden" formControlName="firestoreId" />
+    <input cFormControl type="hidden" formControlName="$key" />
     <!-- Name -->
     <div>
       <c-input-group>
@@ -32,7 +32,7 @@
     <div>
       <c-input-group>
         <span cInputGroupText>Hsn Code</span>
-        <input type="text" cFormControl formControlName="hsnCode" placeholder="Enter hsnCode number">
+        <input type="text" cFormControl formControlName="HSNCode" placeholder="Enter HSN Code number">
       </c-input-group>
     </div>
    

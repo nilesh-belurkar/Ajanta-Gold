@@ -59,3 +59,32 @@
     width: 100%;
   }
 }
+
+/* -------- Pagination -------- */
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.page-link {
+  min-width: 36px;
+  text-align: center;
+}
+
+/* Compact pagination for mobile */
+@media (max-width: 600px) {
+  .page-link {
+    padding: 4px 8px;
+    font-size: 14px;
+  }
+}
+
+ @media (min-width: 601px) {
+    .button {
+      margin-right: 1rem; // Add horizontal space between buttons
+      width: auto; // Reset width to auto for larger screens
+    }
+  }

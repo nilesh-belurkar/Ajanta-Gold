@@ -45,7 +45,7 @@ export class NewCustomerComponent implements OnInit {
       address: ['', Validators.required],
       mobile: ['', [Validators.minLength(10), Validators.maxLength(10)]],
       gst: [''],
-      firestoreId: [''],
+      $key: [''],
     });
   }
   ngOnInit(): void {
@@ -55,8 +55,8 @@ export class NewCustomerComponent implements OnInit {
         name: this.customer.name,
         address: this.customer.address,
         mobile: this.customer.mobile,
-        gst: this.customer.gst,
-        firestoreId: this.customer.firestoreId,
+        gst: this.customer.GST,
+        $key: this.customer.$key,
       });
     }
   }
@@ -70,7 +70,7 @@ export class NewCustomerComponent implements OnInit {
 
     this._spinner.show();
     const customerDetails: Customer = this.customerForm.value;
-    if (customerDetails.firestoreId) {
+    if (customerDetails.$key) {
       this.editCustomer(customerDetails);
     } else {
       this.addCustomer(customerDetails);
@@ -101,13 +101,13 @@ export class NewCustomerComponent implements OnInit {
   }
 
   editCustomer(customerDetails: Customer) {
-    if (!customerDetails.firestoreId) return;
+    if (!customerDetails.$key) return;
 
-    this._commonService.editDoc(CUSTOMER_LIST_COLLECTION_NAME, customerDetails.firestoreId, {
+    this._commonService.editDoc(CUSTOMER_LIST_COLLECTION_NAME, customerDetails.$key, {
       name: customerDetails.name,
       address: customerDetails.address,
       mobile: customerDetails.mobile,
-      gst: customerDetails.gst
+      gst: customerDetails.GST
     });
     this._spinner.hide();
     this.saved.emit(customerDetails);
