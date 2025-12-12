@@ -64,7 +64,7 @@ export class NewGstBillComponent implements OnInit {
     this.isFormSubmitted = true;
     if (this.gstBillForm.valid) {
       this.gstBillForm.value['createdAt'] = new Date();
-      this.gstBillForm.value['productDetails'] = this.productList;
+      this.gstBillForm.value['products'] = this.productList;
       this.gstBillForm.value['customerInfo'] = this.selectedCustomer;
       const bill = this._billingService.prepareInvoice(this.gstBillForm.value);
       if (bill.$key) {
@@ -142,12 +142,21 @@ export class NewGstBillComponent implements OnInit {
 
   getLastGeneratedBill(): void {
     this._spinner.show();
-    this._commonService.getLastGeneratedBill(BILL_LIST_COLLECTION_NAME).subscribe((res: Customer[]) => {
-      this._spinner.hide();
-      this.lastGeneratedBill = res || [];
-      this.gstBillForm.patchValue({ billNumber: this.lastGeneratedBill[0]?.billNumber + 1 || 1 });
-    });
+    this._commonService.getBillsOfCurrentYear(BILL_LIST_COLLECTION_NAME)
+      .subscribe((bills: any[]) => {
+        this._spinner.hide();
+
+        const currentYear = new Date().getFullYear();
+        const nextSeq = bills.length + 1;
+        const seqStr = nextSeq.toString().padStart(3, '0');
+
+        this.gstBillForm.patchValue({
+          billNumber: `${currentYear}-${seqStr}`
+        });
+      });
   }
+
+
 
 
   initGstBillForm(): void {

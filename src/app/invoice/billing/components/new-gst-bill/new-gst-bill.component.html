@@ -26,7 +26,7 @@
       <div>
         <c-input-group>
           <span cInputGroupText>Bill Number</span>
-          <input type="number" cFormControl formControlName="billNumber" placeholder="Enter bill number"
+          <input type="text" cFormControl formControlName="billNumber" placeholder="Enter bill number"
             [class.is-invalid]="gstBillForm.get('billNumber')?.invalid && (gstBillForm.get('billNumber')?.touched || isFormSubmitted)">
         </c-input-group>
         <small class="validation-error"

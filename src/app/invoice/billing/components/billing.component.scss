@@ -46,6 +46,7 @@
 
 /* Hide unnecessary columns on small screens */
 @media (max-width: 600px) {
+
   /* Hide "Product Details" column (4th col) */
   table tr th:nth-child(4),
   table tr td:nth-child(4) {
@@ -81,22 +82,47 @@
   }
 }
 
- @media (min-width: 601px) {
-    .button {
-      margin-right: 1rem; // Add horizontal space between buttons
-      width: auto; // Reset width to auto for larger screens
-    }
+@media (min-width: 601px) {
+  .button {
+    margin-right: 1rem; // Add horizontal space between buttons
+    width: auto; // Reset width to auto for larger screens
   }
+}
 
-  .invoice-preview-wrapper {
+.invoice-preview-wrapper {
   width: 100%;
   max-width: 100%;
-  overflow-x: auto;             /* horizontal scroll */
-  -webkit-overflow-scrolling: touch; /* smooth scrolling on mobile */
+  overflow-x: auto;
+  /* horizontal scroll */
+  -webkit-overflow-scrolling: touch;
+  /* smooth scrolling on mobile */
   box-sizing: border-box;
   padding: 10px;
 }
 
 .invoice-preview-wrapper .invoice-1 {
-  min-width: 800px;   /* keeps desktop layout intact */
+  min-width: 800px;
+  /* keeps desktop layout intact */
+}
+
+.billing-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  /* space between rows */
+}
+
+.top-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.bottom-row {
+  display: flex;
+}
+
+.year-picker {
+  width: 200px;
+  display: inline-flex;
 }

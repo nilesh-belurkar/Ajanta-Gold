@@ -1,5 +1,5 @@
 <form [formGroup]="addProductFrom" cForm class="add-product-form">
-  <input cFormControl type="text" formControlName="$key" />
+  <input cFormControl type="hidden" formControlName="$key" />
   <section>
     <div class="form-grid">
       <div>
@@ -57,7 +57,7 @@
       </div>
       <div>
         <c-input-group>
-          <span cInputGroupText>Batch Number</span>
+          <span cInputGroupText>Expiry Date</span>
           <input type="text" cFormControl formControlName="expiryDate" placeholder="Enter expiry date" [bsConfig]="bsConfig" bsDatepicker>
         </c-input-group>
       </div>
