@@ -20,7 +20,8 @@ import { OrderDetailsComponent } from '../../orders/components/order-details/ord
 import { ToastrService } from 'ngx-toastr';
 import { BillPreviewComponent } from './bill-preview/bill-preview.component';
 import { Router } from '@angular/router';
-import { Bill } from '../models/billing.model';
+import { Bill, Product } from '../models/billing.model';
+import { BsDatepickerConfig, BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 
 @Component({
   selector: 'app-billing',
@@ -35,6 +36,7 @@ import { Bill } from '../models/billing.model';
     ModalModule,
     ConfirmationComponent,
     FormControlDirective,
+    BsDatepickerModule
   ],
   templateUrl: './billing.component.html',
   styleUrl: './billing.component.scss'
@@ -49,6 +51,7 @@ export class BillingComponent {
   currentPage: number = 1;
   pageSize: number = 0;
   totalItems: number = 0;
+  currentYear = new Date().getFullYear();
 
   showModal: boolean = false;
   showProductDetailsModal: boolean = false;
@@ -62,6 +65,12 @@ export class BillingComponent {
   private _toastrService = inject(ToastrService);
   private _router = inject(Router);
 
+
+  bsConfig: Partial<BsDatepickerConfig> = {
+    dateInputFormat: 'YYYY',
+    minMode: 'year'
+  };
+
   constructor(
     private _commonService: CommonService,
     private _formBuilder: FormBuilder,
@@ -72,7 +81,7 @@ export class BillingComponent {
   ngOnInit(): void {
     this.pageSize = window.innerWidth <= 768 ? 5 : 10;
     this.initBillingForm();
-    this.loadBillings();
+    this.loadBillings(this.currentYear);
     this.searchBilling();
   }
 
@@ -106,9 +115,9 @@ export class BillingComponent {
     this.updatePagination();
   }
 
-  loadBillings(): void {
+  loadBillings(year: number): void {
     this._spinner.show();
-    this._commonService.getDocuments(BILL_LIST_COLLECTION_NAME).pipe(take(1)).subscribe((res: any[]) => {
+    this._commonService.getDocuments(BILL_LIST_COLLECTION_NAME, this.currentYear).pipe(take(1)).subscribe((res: any[]) => {
       this._spinner.hide();
       this.billingList = res || [];
       console.log("🚀 ~ this.billingList:", JSON.stringify(this.billingList));
@@ -122,6 +131,7 @@ export class BillingComponent {
     const start = (this.currentPage - 1) * this.pageSize;
     const end = start + this.pageSize;
     this.paginatedBillingList = this.filteredBillingList.slice(start, end);
+    console.log("🚀 ~ this.paginatedBillingList:", this.paginatedBillingList)
   }
 
   get totalPages(): number {
@@ -160,7 +170,7 @@ export class BillingComponent {
         savedSub?.unsubscribe();
         closedSub?.unsubscribe();
         this.closeModal();
-        this.loadBillings();
+        this.loadBillings(this.currentYear);
         resolve();
       });
 
@@ -192,7 +202,7 @@ export class BillingComponent {
       if (result) {
         this._commonService.deleteDoc(BILL_LIST_COLLECTION_NAME, bill.$key).then(() => {
           this._toastrService.success('Billing deleted successfully');
-          this.loadBillings()
+          this.loadBillings(this.currentYear)
           this._spinner.hide();
         }, error => {
           this._spinner.hide()
@@ -210,7 +220,8 @@ export class BillingComponent {
     return this._paginationService.getVisiblePages(this.currentPage, this.totalPages, maxPages);
   }
 
-  onProductDetails(billing: any[]) {
+  onProductDetails(bill: Bill) {
+
     this.showProductDetailsModal = true;
     this.modalHost.clear();
     this.modalRef = this.modalHostOrderDetails.createComponent(OrderDetailsComponent);
@@ -219,30 +230,36 @@ export class BillingComponent {
     const columnOrder: string[] = ['productName', 'productPrice', 'productQty'];
 
     // Hidden columns
-    const hiddenColumns = ['HSNCode', 'batchNumber', 'expiryDate', 'freeGoods'];
+    const hiddenColumns = ['HSNCode', 'batchNumber', 'expiryDate', 'freeGoods', '$key'];
 
-    // Get keys only from first row (consistent structure)
-    const keys = Object.keys(billing[0])
-      .filter(key => !hiddenColumns.includes(key));
+    // SAFETY: products must be an array and have at least 1 item
+    if (!bill.products || bill.products.length === 0) {
+      console.error("No product details available.");
+      return;
+    }
+
+    // Extract keys from FIRST product
+    const keys = Object.keys(bill.products[0]).filter(key => !hiddenColumns.includes(key));
 
     // Sort based on priority
     const sortedKeys = [
-      ...columnOrder.filter(x => keys.includes(x)),
-      ...keys.filter(x => !columnOrder.includes(x))
+      ...columnOrder.filter(col => keys.includes(col)),
+      ...keys.filter(col => !columnOrder.includes(col))
     ];
 
-    // Format column headers
+    // Format headers
     const columns = sortedKeys.map(key => ({
       key,
-      label: this.formatHeader(key)
+      label: this.formatHeader(key),
     }));
 
-    // Assign to modal
+    // Assign actual product rows
     this.modalRef.instance.columns = columns;
-    this.modalRef.instance.rows = billing;
+    this.modalRef.instance.rows = bill.products;  // ← FIXED
 
     this.modalRef.instance.closed.subscribe(() => this.closeModal());
   }
+
 
   private formatHeader(key: string): string {
     return key.replace(/([A-Z])/g, ' $1').replace(/^\w/, c => c.toUpperCase());
@@ -256,6 +273,13 @@ export class BillingComponent {
 
   printBill(bill: any) {
     this._router.navigate(['invoice/view-bill', bill.$key]);
+  }
+
+
+  onYearChange(selectedDate: Date) {
+    if (!selectedDate) return;
+    this.currentYear = selectedDate.getFullYear();
+    this.loadBillings(this.currentYear);
   }
 
 }

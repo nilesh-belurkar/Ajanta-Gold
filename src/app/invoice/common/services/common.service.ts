@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, doc, addDoc, deleteDoc, updateDoc, orderBy, query, limit } from '@angular/fire/firestore';
 import { collectionData, docData } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
-import { serverTimestamp } from 'firebase/firestore';
+import { map, Observable } from 'rxjs';
+import { serverTimestamp, where } from 'firebase/firestore';
 
 
 @Injectable({
@@ -14,24 +14,51 @@ export class CommonService {
   /** -------------------------
    * READ (REAL-TIME STREAM)
    * ------------------------*/
-  getDocuments(collectionName: string): Observable<any[]> {
-    const ref = collection(this._firestore, collectionName);
-    return collectionData(ref, { idField: '$key' }) as Observable<any[]>;
-  }
-
 
   getLastGeneratedBill(collectionName: string) {
     const ref = collection(this._firestore, collectionName);
-    const q = query(ref, orderBy('createdAt', 'desc'), limit(1));
-    return collectionData(q, { idField: '$key' }) as Observable<any[]>;
+
+    const q = query(
+      ref,
+      where("billYear", "==", new Date().getFullYear().toString())
+    );
+
+    return collectionData(q, { idField: "$key" }).pipe(
+      map((bills: any[]) => {
+        if (!bills.length) return null;
+        // sort manually (no index needed)
+        return bills.sort((a, b) => b.billSequence - a.billSequence)[0];
+      })
+    );
   }
 
 
-  // getDocuments(collectionName: string): Observable<any[]> {
-  //   const ref = collection(this._firestore, collectionName);
-  //   const q = query(ref, orderBy('createdAt', 'desc'));
-  //   return collectionData(q, { idField: 'firestoreId' }) as Observable<any[]>;
-  // }
+
+  getDocuments(collectionName: string, year?: number): Observable<any[]> {
+    console.log("🚀 ~ year:", year)
+    const ref = collection(this._firestore, collectionName);
+
+    let q;
+
+    if (year) {
+      const start = new Date(year, 0, 1);
+      const end = new Date(year + 1, 0, 1);
+
+      q = query(
+        ref,
+        where("createdAt", ">=", start),
+        where("createdAt", "<", end),
+        orderBy("createdAt", "desc")
+      );
+    } else {
+      q = query(
+        ref,
+        orderBy("createdAt", "desc")
+      );
+    }
+
+    return collectionData(q, { idField: "$key" }) as Observable<any[]>;
+  }
 
   getDocumentById(collectionName: string, docId: string): Observable<any> {
     const ref = doc(this._firestore, `${collectionName}/${docId}`);
@@ -99,5 +126,23 @@ export class CommonService {
    * ------------------------*/
   addBulkCustomers(collectionName: string, customers: any[]): Promise<any[]> {
     return Promise.all(customers.map(c => this.addDoc(collectionName, c)));
+  }
+
+  getBillsOfCurrentYear(collectionName: string) {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+
+    const startOfYear = new Date(currentYear, 0, 1);
+    const startOfNextYear = new Date(currentYear + 1, 0, 1);
+
+    const ref = collection(this._firestore, collectionName);
+
+    const q = query(
+      ref,
+      where('createdAt', '>=', startOfYear),
+      where('createdAt', '<', startOfNextYear)
+    );
+
+    return collectionData(q, { idField: '$key' });
   }
 }

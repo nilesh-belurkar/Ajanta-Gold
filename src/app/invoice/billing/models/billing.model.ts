@@ -1,5 +1,5 @@
 export interface Product {
-  $key?: string | null;
+  $key: string | null;
   productName: string;
   productQty: number;
   productPrice: number;
@@ -21,13 +21,13 @@ export interface Customer {
 
 
 export interface Bill {
-  $key?: string | null;
+  $key: string | null;
   customerName: string;
   billNumber: number;
   billDate: string | Date;
   vehicleNumber: string;
   discount: number;
   createdAt: string | Date;
-  productDetails: Product[];
+  products: Product[];
   customerInfo: Customer;
 }

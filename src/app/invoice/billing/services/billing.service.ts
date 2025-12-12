@@ -15,7 +15,7 @@ export class BillingService {
     let totalDiscountAmount = billDetails.discount || 0;
     let totalTax = 0;
 
-    const products = billDetails.productDetails.map(p => {
+    const products = billDetails.products.map(p => {
       const qty = p.productQty || 0;
       const rate = p.productPrice || 0;
       const freeQty = p.freeGoods || 0;
@@ -38,7 +38,8 @@ export class BillingService {
         productQty: qty,
         freeGoods: freeQty,
         productPrice: rate,
-        amount: amount
+        amount: amount,
+        HSNCode: p.HSNCode
       };
     });
 

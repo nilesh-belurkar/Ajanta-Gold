@@ -1,10 +1,31 @@
 <div class="billing-actions">
-  <button cButton color="info" class="text-white fw-bold" (click)="openNewBillingModal()">Add GST Bill</button>
-  <c-input-group class="billing-input">
-    <input aria-label="Search billing name" cFormControl placeholder="Search billing name" [formControl]="searchTerm" />
-    <span role="button" cInputGroupText class="fs-5" (click)="resetSearch()">&times;</span>
-  </c-input-group>
+
+  <!-- Top row -->
+  <div class="top-row">
+    <button cButton color="info" class="text-white fw-bold" (click)="openNewBillingModal()">
+      Add GST Bill
+    </button>
+
+    <c-input-group class="billing-input">
+      <input aria-label="Search billing name" cFormControl placeholder="Search billing name"
+        [formControl]="searchTerm" />
+      <span role="button" cInputGroupText class="fs-5" (click)="resetSearch()">&times;</span>
+    </c-input-group>
+  </div>
+
+  <div class="bottom-row">
+    <c-input-group class="year-picker">
+      <span cInputGroupText (click)="dp.toggle()">
+        <svg cIcon name="cil-calendar" title="Select Year" class="mx-1" style="cursor:pointer;"></svg>
+        &nbsp;Select Year
+      </span>
+      <input type="text" cFormControl bsDatepicker [bsConfig]="bsConfig" #dp="bsDatepicker" [(ngModel)]="currentYear"
+        (bsValueChange)="onYearChange($event)" readonly />
+    </c-input-group>
+  </div>
+
 </div>
+
 
 
 
@@ -47,7 +68,7 @@
         <td title="{{ billing.billNumber }}">{{ billing.billNumber }}</td>
         <td title="{{ billing.customerInfo.name }}">{{ billing.customerInfo.name }}</td>
         <td title="View products details">
-          <button cButton color="info" class="text-white button" (click)="onProductDetails(billing.productDetails)">
+          <button cButton color="info" class="text-white button" (click)="onProductDetails(billing)">
             <svg cIcon name="cil-pencil" title="Edit billing details" class="mx-1"></svg>Product Details</button>
         </td>
 
