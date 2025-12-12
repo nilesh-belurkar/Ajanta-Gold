@@ -91,3 +91,34 @@ export function formatExpiryDate(value: string | Timestamp | null): string | nul
 
   return new Intl.DateTimeFormat('en-US', options).format(date);
 }
+
+
+
+export function convertTimestamps(obj: any): any {
+  if (!obj) return obj;
+
+  // Firestore Timestamp
+  if (
+    typeof obj === 'object' &&
+    'seconds' in obj &&
+    'nanoseconds' in obj &&
+    Object.keys(obj).length === 2
+  ) {
+    return new Date(obj.seconds * 1000 + obj.nanoseconds / 1e6);
+  }
+
+  // Recursively scan nested objects/arrays
+  if (Array.isArray(obj)) {
+    return obj.map(v => convertTimestamps(v));
+  }
+
+  if (typeof obj === 'object') {
+    const result: any = {};
+    for (const key of Object.keys(obj)) {
+      result[key] = convertTimestamps(obj[key]);
+    }
+    return result;
+  }
+
+  return obj;
+}

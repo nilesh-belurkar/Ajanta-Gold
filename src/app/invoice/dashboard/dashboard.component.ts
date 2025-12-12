@@ -1,188 +1,195 @@
-import { NgStyle } from '@angular/common';
-import { Component, DestroyRef, DOCUMENT, effect, inject, OnInit, Renderer2, signal, WritableSignal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ChartOptions } from 'chart.js';
+import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+
+import { Firestore, collection, query, where, orderBy, limit, collectionData } from '@angular/fire/firestore';
 import {
-  AvatarComponent,
-  ButtonDirective,
-  ButtonGroupComponent,
   CardBodyComponent,
   CardComponent,
-  CardFooterComponent,
-  CardHeaderComponent,
   ColComponent,
-  FormCheckLabelDirective,
-  GutterDirective,
-  ProgressComponent,
   RowComponent,
-  TableDirective
+  TableDirective,
+  TemplateIdDirective,
+  WidgetStatAComponent
 } from '@coreui/angular';
 import { ChartjsComponent } from '@coreui/angular-chartjs';
 import { IconDirective } from '@coreui/icons-angular';
-import { WidgetsDropdownComponent } from 'src/app/views/widgets/widgets-dropdown/widgets-dropdown.component';
-import { DashboardChartsData, IChartProps } from './dashboard-charts-data';
-import { WidgetsBrandComponent } from 'src/app/views/widgets/widgets-brand/widgets-brand.component';
+import { map } from 'rxjs';
+import { BILL_LIST_COLLECTION_NAME, CUSTOMER_LIST_COLLECTION_NAME, PRODUCT_LIST_COLLECTION_NAME } from '../common/constants/constant';
+import { convertTimestamps } from '../common/utility';
+import { ChartDataModel, ChartOptionsModel } from './models/dashboard.model';
 
-
-interface IUser {
-  name: string;
-  state: string;
-  registered: string;
-  country: string;
-  usage: number;
-  period: string;
-  payment: string;
-  activity: string;
-  avatar: string;
-  status: string;
-  color: string;
-}
 
 @Component({
   templateUrl: 'dashboard.component.html',
   styleUrls: ['dashboard.component.scss'],
-  imports: [WidgetsDropdownComponent, CardComponent, CardBodyComponent, RowComponent, ColComponent, ButtonDirective, IconDirective, ReactiveFormsModule, ButtonGroupComponent, FormCheckLabelDirective, ChartjsComponent, NgStyle, CardFooterComponent, GutterDirective, ProgressComponent, WidgetsBrandComponent, CardHeaderComponent, TableDirective, AvatarComponent]
+  imports: [DecimalPipe, DatePipe, CardComponent, CardBodyComponent, RowComponent, ColComponent, IconDirective, ReactiveFormsModule, ChartjsComponent, TableDirective, CurrencyPipe, RowComponent, ColComponent, WidgetStatAComponent, TemplateIdDirective, IconDirective, ChartjsComponent]
 })
 export class DashboardComponent implements OnInit {
+  invoicesBarData!: ChartDataModel;
+  invoicesBarOptions!: ChartOptionsModel;
 
-  readonly #destroyRef: DestroyRef = inject(DestroyRef);
-  readonly #document: Document = inject(DOCUMENT);
-  readonly #renderer: Renderer2 = inject(Renderer2);
-  readonly #chartsData: DashboardChartsData = inject(DashboardChartsData);
+  topCustomersPieData!: ChartDataModel;
+  topCustomersPieOptions!: ChartOptionsModel;
 
-  public users: IUser[] = [
-    {
-      name: 'Yiorgos Avraamu',
-      state: 'New',
-      registered: 'Jan 1, 2021',
-      country: 'Us',
-      usage: 50,
-      period: 'Jun 11, 2021 - Jul 10, 2021',
-      payment: 'Mastercard',
-      activity: '10 sec ago',
-      avatar: './assets/images/avatars/1.jpg',
-      status: 'success',
-      color: 'success'
-    },
-    {
-      name: 'Avram Tarasios',
-      state: 'Recurring ',
-      registered: 'Jan 1, 2021',
-      country: 'Br',
-      usage: 10,
-      period: 'Jun 11, 2021 - Jul 10, 2021',
-      payment: 'Visa',
-      activity: '5 minutes ago',
-      avatar: './assets/images/avatars/2.jpg',
-      status: 'danger',
-      color: 'info'
-    },
-    {
-      name: 'Quintin Ed',
-      state: 'New',
-      registered: 'Jan 1, 2021',
-      country: 'In',
-      usage: 74,
-      period: 'Jun 11, 2021 - Jul 10, 2021',
-      payment: 'Stripe',
-      activity: '1 hour ago',
-      avatar: './assets/images/avatars/3.jpg',
-      status: 'warning',
-      color: 'warning'
-    },
-    {
-      name: 'Enéas Kwadwo',
-      state: 'Sleep',
-      registered: 'Jan 1, 2021',
-      country: 'Fr',
-      usage: 98,
-      period: 'Jun 11, 2021 - Jul 10, 2021',
-      payment: 'Paypal',
-      activity: 'Last month',
-      avatar: './assets/images/avatars/4.jpg',
-      status: 'secondary',
-      color: 'danger'
-    },
-    {
-      name: 'Agapetus Tadeáš',
-      state: 'New',
-      registered: 'Jan 1, 2021',
-      country: 'Es',
-      usage: 22,
-      period: 'Jun 11, 2021 - Jul 10, 2021',
-      payment: 'ApplePay',
-      activity: 'Last week',
-      avatar: './assets/images/avatars/5.jpg',
-      status: 'success',
-      color: 'primary'
-    },
-    {
-      name: 'Friderik Dávid',
-      state: 'New',
-      registered: 'Jan 1, 2021',
-      country: 'Pl',
-      usage: 43,
-      period: 'Jun 11, 2021 - Jul 10, 2021',
-      payment: 'Amex',
-      activity: 'Yesterday',
-      avatar: './assets/images/avatars/6.jpg',
-      status: 'info',
-      color: 'dark'
-    }
-  ];
+  newCustomersCount: number = 0;
+  newProductsCount: number = 0;
+  invoicesThisMonthCount: number = 0;
+  revenueThisMonth: number = 0;
+  recentInvoices: any[] = [];
 
-  public mainChart: IChartProps = { type: 'line' };
-  public mainChartRef: WritableSignal<any> = signal(undefined);
-  #mainChartRefEffect = effect(() => {
-    if (this.mainChartRef()) {
-      this.setChartStyles();
-    }
-  });
-  public chart: Array<IChartProps> = [];
-  public trafficRadioGroup = new FormGroup({
-    trafficRadio: new FormControl('Month')
-  });
+  constructor(private _firestore: Firestore) { }
 
-  ngOnInit(): void {
-    this.initCharts();
-    this.updateChartOnColorModeChange();
+  ngOnInit() {
+    this.loadKPIs();
+    this.loadRecentInvoice();
+    this.loadCharts();
   }
 
-  initCharts(): void {
-    this.mainChartRef()?.stop();
-    this.mainChart = this.#chartsData.mainChart;
+  loadKPIs() {
+    const now = new Date();
+
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(now.getDate() - 7);
+
+    const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    // New Customers (7 days)
+    this.queryCount(CUSTOMER_LIST_COLLECTION_NAME, 'createdAt', sevenDaysAgo)
+      .subscribe(c => this.newCustomersCount = c);
+
+    // New Products (7 days)
+    this.queryCount(PRODUCT_LIST_COLLECTION_NAME, 'createdAt', sevenDaysAgo)
+      .subscribe(c => this.newProductsCount = c);
+
+    // Invoices this month
+    this.queryCount(BILL_LIST_COLLECTION_NAME, 'createdAt', monthStart)
+      .subscribe(c => this.invoicesThisMonthCount = c);
+
+    // Revenue this month
+    this.queryCollection(BILL_LIST_COLLECTION_NAME, 'createdAt', monthStart)
+      .pipe(map(list => list.reduce((a: number, b: any) => a + b.grandTotal, 0)))
+      .subscribe(sum => this.revenueThisMonth = sum);
   }
 
-  setTrafficPeriod(value: string): void {
-    this.trafficRadioGroup.setValue({ trafficRadio: value });
-    this.#chartsData.initMainChart(value);
-    this.initCharts();
+  queryCount(collectionName: string, field: string, start: Date) {
+    return this.queryCollection(collectionName, field, start)
+      .pipe(map(list => list.length));
   }
 
-  handleChartRef($chartRef: any) {
-    if ($chartRef) {
-      this.mainChartRef.set($chartRef);
-    }
+  queryCollection(collectionName: string, field: string, start: Date) {
+    const ref = collection(this._firestore, collectionName);
+    const q = query(ref, where(field, '>=', start));
+    return collectionData(q, { idField: '$key' });
   }
 
-  updateChartOnColorModeChange() {
-    const unListen = this.#renderer.listen(this.#document.documentElement, 'ColorSchemeChange', () => {
-      this.setChartStyles();
-    });
-
-    this.#destroyRef.onDestroy(() => {
-      unListen();
-    });
+  loadRecentInvoice() {
+    this.getRecent(BILL_LIST_COLLECTION_NAME).subscribe(invoice => this.recentInvoices = invoice.map(invoice => convertTimestamps(invoice)));
   }
 
-  setChartStyles() {
-    if (this.mainChartRef()) {
-      setTimeout(() => {
-        const options: ChartOptions = { ...this.mainChart.options };
-        const scales = this.#chartsData.getScales();
-        this.mainChartRef().options.scales = { ...options.scales, ...scales };
-        this.mainChartRef().update();
+  getRecent(col: string) {
+    const ref = collection(this._firestore, col);
+    const q = query(ref, orderBy('createdAt', 'desc'), limit(10));
+    return collectionData(q, { idField: '$key' });
+  }
+
+  loadCharts() {
+    this.loadInvoicesPerMonthChart();
+    this.loadTopCustomersPieChart();
+  }
+
+  loadInvoicesPerMonthChart() {
+    const ref = collection(this._firestore, BILL_LIST_COLLECTION_NAME);
+
+    const start = new Date();
+    start.setFullYear(start.getFullYear() - 1);
+
+    const q = query(ref, where('createdAt', '>=', start));
+
+    collectionData(q, { idField: '$key' })
+      .subscribe((invoices: any[]) => {
+        const monthly = Array(12).fill(0);
+
+        invoices.forEach(inv => {
+          const dt = inv.createdAt.toDate();
+          const m = dt.getMonth();
+          monthly[m] += 1;
+        });
+
+        this.invoicesBarData = {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+          datasets: [
+            {
+              label: 'Invoices',
+              data: monthly,
+              backgroundColor: 'rgba(54,162,235,0.7)',
+              borderWidth: 0
+            }
+          ]
+        };
+
+        this.invoicesBarOptions = {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: { beginAtZero: true }
+          }
+        };
       });
-    }
   }
+
+  loadTopCustomersPieChart() {
+    const ref = collection(this._firestore, BILL_LIST_COLLECTION_NAME);
+
+    const start = new Date();
+    start.setFullYear(start.getFullYear() - 1);
+
+    const q = query(ref, where('createdAt', '>=', start));
+
+    collectionData(q, { idField: '$key' })
+      .subscribe((invoices: any[]) => {
+        const totals: any = {};
+
+        invoices.forEach(inv => {
+          totals[inv.customerInfo.name] =
+            (totals[inv.customerInfo.name] || 0) + (inv.grandTotal || 0);
+        });
+
+        const sorted = Object.entries(totals)
+          .sort((a: any, b: any) => b[1] - a[1])
+          .slice(0, 5);
+
+        this.topCustomersPieData = {
+          labels: sorted.map(s => s[0]),
+          datasets: [
+            {
+              data: sorted.map(s => s[1] as number),
+              backgroundColor: [
+                '#4dc9f6',
+                '#f67019',
+                '#f53794',
+                '#537bc4',
+                '#acc236'
+              ]
+            }
+          ]
+        };
+
+
+        this.topCustomersPieOptions = {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              position: 'bottom'
+            }
+          }
+        };
+      });
+  }
+
 }

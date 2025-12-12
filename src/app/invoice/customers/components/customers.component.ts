@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ComponentRef, ViewContainerRef } from '@angular/core';
-import { CommonModule, NgIf } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { CUSTOMER_LIST_COLLECTION_NAME } from '../../common/constants/constant';
 import { CommonService } from '../../common/services/common.service';
 import { NewCustomerComponent } from './new-customer/new-customer.component';
@@ -14,7 +14,7 @@ import {
 } from '@coreui/angular';
 import { IconModule } from '@coreui/icons-angular';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { Customer } from '../models/customer.model';
+import { Customer } from '../../billing/models/billing.model';
 import { debounceTime, take } from 'rxjs/operators';
 import { ConfirmationComponent } from '../../common/components/confirmation/confirmation.component';
 import { PaginationUtilService } from '../../common/services/pagination-util.service';
@@ -64,7 +64,6 @@ export class CustomersComponent implements OnInit {
 
   ngOnInit(): void {
     this.pageSize = window.innerWidth <= 768 ? 5 : 10;
-    this.initCustomerForm();
     this.loadCustomers();
     this.searchCustomers();
   }
@@ -83,16 +82,6 @@ export class CustomersComponent implements OnInit {
     this.searchTerm.setValue('');
   }
 
-  initCustomerForm(): void {
-    this.customerForm = this._formBuilder.group({
-      $key: [null],
-      customerName: ['', Validators.required],
-      address: ['', Validators.required],
-      mobile: ['', [Validators.minLength(10), Validators.maxLength(10)]],
-      gstNumber: ['']
-    });
-  }
-
   filterCustomers(searchTerm: string | null) {
     const term = (searchTerm ?? '').toLowerCase(); // safe null handling
     this.filteredCustomerList = this.customerList.filter(c => c.name.toLowerCase().includes(term));
@@ -102,15 +91,18 @@ export class CustomersComponent implements OnInit {
 
   loadCustomers(): void {
     this._spinner.show();
-    this._commonService.getDocuments(CUSTOMER_LIST_COLLECTION_NAME).subscribe((res: Customer[]) => {
-      this._spinner.hide();
-      this.customerList = res || [];
-      console.log("🚀 ~ this.customerList:", this.customerList);
-      this.filteredCustomerList = [...this.customerList];
-      this.totalItems = this.filteredCustomerList.length;
-      this.updatePagination();
-    });
+    this._commonService.getDocuments(CUSTOMER_LIST_COLLECTION_NAME)
+      .pipe(take(1))
+      .subscribe((res: Customer[]) => {
+        this._spinner.hide();
+        this.customerList = res || [];
+        this.filteredCustomerList = [...this.customerList];
+        console.log("🚀 ~ this.customerList", this.customerList);
+        this.totalItems = this.filteredCustomerList.length;
+        this.updatePagination();
+      });
   }
+
 
   updatePagination(): void {
     const start = (this.currentPage - 1) * this.pageSize;
@@ -128,9 +120,17 @@ export class CustomersComponent implements OnInit {
     this.updatePagination();
   }
 
+
   openNewCustomerModal(customer?: Customer) {
     this.showModal = true;
     this.modalHost.clear();
+
+    // Destroy previous modal
+    if (this.modalRef) {
+      this.modalRef.destroy();
+      this.modalRef = undefined;
+    }
+
     this.modalRef = this.modalHost.createComponent(NewCustomerComponent);
 
     if (customer) {
@@ -139,12 +139,26 @@ export class CustomersComponent implements OnInit {
     } else {
       this.modalTitle = 'New Customer';
     }
-     this.modalRef.instance.saved?.pipe(take(1)).subscribe(() => {
-      this.closeModal();
-    });
 
-    this.modalRef.instance.closed?.pipe(take(1)).subscribe(() => this.closeModal());
+    // Return a promise that resolves on save or reject on close
+    return new Promise<void>((resolve) => {
+      const savedSub = this.modalRef!.instance.saved?.subscribe(() => {
+        savedSub?.unsubscribe();
+        closedSub?.unsubscribe();
+        this.closeModal();
+        this.loadCustomers();
+        resolve();
+      });
+
+      const closedSub = this.modalRef!.instance.closed?.subscribe(() => {
+        savedSub?.unsubscribe();
+        closedSub?.unsubscribe();
+        this.closeModal();
+        resolve();
+      });
+    });
   }
+
 
   closeModal() {
     this.showModal = false;
@@ -157,17 +171,22 @@ export class CustomersComponent implements OnInit {
   }
 
   async deleteCustomer(customer: Customer) {
-    this.confirmModal.open(`Are you sure you want delete "${customer.name}"?`, 'Delete Confirmation');
+    if (!customer.$key) {
+      console.error('Cannot delete customer without $key');
+      return;
+    }
+
+    this.confirmModal.open(`Are you sure you want to delete "${customer.name}"?`, 'Delete Confirmation');
 
     const sub = this.confirmModal.confirmed.subscribe((result) => {
       if (result) {
         this._commonService.deleteDoc(CUSTOMER_LIST_COLLECTION_NAME, customer.$key);
-        this.loadCustomers(); // refresh list
       }
-
-      sub.unsubscribe(); // avoid leak
+      this.loadCustomers();
+      sub.unsubscribe();
     });
   }
+
 
 
   get visiblePages(): number[] {

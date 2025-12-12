@@ -1,13 +1,13 @@
 export const environment = {
   firebase: {
-    apiKey: "AIzaSyB7YqCYisShia2sY-XKWDsIPSRlEVOMDtM",
-    authDomain: "invoice-generator-8e5c2.firebaseapp.com",
-    databaseURL: "https://invoice-generator-8e5c2.firebaseio.com",
-    projectId: "invoice-generator-8e5c2",
-    storageBucket: "invoice-generator-8e5c2.appspot.com",
-    messagingSenderId: "1095098064115",
-    appId: "1:1095098064115:web:3d64c0dabbb1b6d23dab86",
-    measurementId: "G-FS8V9EXP1G"
+    projectId: 'ajanta-brand',
+    appId: '1:1064597679196:web:dd1cd393d825c5b2fbca99',
+    storageBucket: 'ajanta-brand.appspot.com',
+    locationId: 'us-central',
+    apiKey: 'AIzaSyAgZqk4Wjp45FUylEldCaLfkr1O8PbbdLg',
+    authDomain: 'ajanta-brand.firebaseapp.com',
+    messagingSenderId: '1064597679196',
+    measurementId: 'G-7JVKJXCVPK',
   },
   production: true
 };

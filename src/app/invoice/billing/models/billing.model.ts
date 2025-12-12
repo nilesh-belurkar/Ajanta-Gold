@@ -1,12 +1,33 @@
-import { Timestamp } from '@angular/fire/firestore';
-
-export interface AddProduct {
+export interface Product {
+  $key?: string | null;
   productName: string;
   productQty: number;
-  productPrice: string;
-  HSNCode: number;
-  batchNumber: number;
-  freeGoods: number;
-  expiryDate: string | Timestamp | null;
+  productPrice: number;
+  HSNCode?: number;
+  batchNumber?: number | string;
+  freeGoods?: number;
+  expiryDate?: string;
   isDuplicate?: boolean;
+}
+
+export interface Customer {
+  $key: string;
+  createdAt?: any;
+  name: string;
+  GST?: string;
+  address: string;
+  mobile: string;
+}
+
+
+export interface Bill {
+  $key?: string | null;
+  customerName: string;
+  billNumber: number;
+  billDate: string | Date;
+  vehicleNumber: string;
+  discount: number;
+  createdAt: string | Date;
+  productDetails: Product[];
+  customerInfo: Customer;
 }

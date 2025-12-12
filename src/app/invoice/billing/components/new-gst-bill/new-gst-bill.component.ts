@@ -8,11 +8,11 @@ import { ToastrService } from 'ngx-toastr';
 import { CommonService } from '../../../common/services/common.service';
 import { take } from 'rxjs';
 import { AddProductComponent } from './add-product/add-product.component';
-import { AddProduct } from '../../models/billing.model';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
-import { Customer } from '../../../customers/models/customer.model';
 import { BILL_LIST_COLLECTION_NAME, CUSTOMER_LIST_COLLECTION_NAME } from '../../../../invoice/common/constants/constant';
-import { convertToDDMMYYYY, formatExpiryDate } from '../../../common/utility';
+import { convertToDDMMYYYY } from '../../../common/utility';
+import { BillingService } from '../../services/billing.service';
+import { Customer, Product } from '../../models/billing.model';
 
 
 @Component({
@@ -38,11 +38,11 @@ export class NewGstBillComponent implements OnInit {
   modalTitle: string = 'New Billing';
   private modalRef?: ComponentRef<any>;
   showModal: boolean = false;
-  productList: AddProduct[] = [];
-  @Input() bill?: any;
+  productList: Product[] = [];
+  @Input() existingBill?: any;
   customerList: Customer[] = [];
   filteredCustomerList: Customer[] = [];
-  selectedCustomer: Customer = {} as Customer;
+  selectedCustomer!: Customer;
   showSuggestions: boolean = false;
   lastGeneratedBill: any[] = [];
   bsConfig = {
@@ -56,17 +56,17 @@ export class NewGstBillComponent implements OnInit {
   private _commonService = inject(CommonService);
   private _formBuilder = inject(FormBuilder);
   private _spinner = inject(NgxSpinnerService);
-  @Output() saved = new EventEmitter<AddProduct>();
+  private _billingService = inject(BillingService);
+  @Output() saved = new EventEmitter<Product>();
   @Output() closed = new EventEmitter<void>();
 
   save() {
     this.isFormSubmitted = true;
     if (this.gstBillForm.valid) {
       this.gstBillForm.value['createdAt'] = new Date();
-      this.productList.forEach(product => product.expiryDate = formatExpiryDate(product.expiryDate));
       this.gstBillForm.value['productDetails'] = this.productList;
       this.gstBillForm.value['customerInfo'] = this.selectedCustomer;
-      const bill = this.gstBillForm.value;
+      const bill = this._billingService.prepareInvoice(this.gstBillForm.value);
       if (bill.$key) {
         this.editBill(bill);
       } else {
@@ -91,6 +91,7 @@ export class NewGstBillComponent implements OnInit {
   }
 
   editBill(bill: any) {
+    console.log("🚀 ~ bill:", bill)
     this._spinner.show();
     if (!bill.$key) return;
 
@@ -110,11 +111,20 @@ export class NewGstBillComponent implements OnInit {
   ngOnInit(): void {
     this.initGstBillForm();
     this.loadCustomers();
-    if (this.bill) {
-      this.bill.billDate = convertToDDMMYYYY(this.bill?.billDate);
-      this.bill.productDetails.forEach((product: AddProduct) => product.expiryDate = convertToDDMMYYYY(product.expiryDate));
-      this.gstBillForm.patchValue(this.bill);
-      this.productList = this.bill.productDetails || [];
+    console.log("🚀 ~ this.existingBill:", this.existingBill)
+    if (this.existingBill) {
+      this.existingBill.billDate = convertToDDMMYYYY(this.existingBill?.billDate);
+      this.gstBillForm.patchValue({
+        $key: this.existingBill.$key,
+        customerName: this.existingBill.customerInfo.name,
+        billNumber: this.existingBill.billNumber,
+        billDate: this.existingBill.billDate,
+        vehicleNumber: this.existingBill.vehicleNumber,
+        discount: this.existingBill.discount,
+      });
+
+      this.selectedCustomer = this.existingBill.customerInfo;
+      this.productList = this.existingBill.products || [];
     } else {
       this.getLastGeneratedBill();
     }
@@ -147,7 +157,6 @@ export class NewGstBillComponent implements OnInit {
       billNumber: ['', Validators.required],
       billDate: [new Date(), Validators.required],
       vehicleNumber: ['MH-26 BE 7136'],
-      firestoreId: [''],
       discount: [''],
     });
   }
@@ -158,7 +167,7 @@ export class NewGstBillComponent implements OnInit {
     this.modalRef = this.modalHost.createComponent(AddProductComponent);
 
 
-    this.modalRef.instance.saved?.pipe(take(1)).subscribe((product: AddProduct) => {
+    this.modalRef.instance.saved?.pipe(take(1)).subscribe((product: Product) => {
       this.productList.push(product);
       this.markAllAsDuplicate();
       this.closeModal();

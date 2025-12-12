@@ -41,9 +41,9 @@ export class NewProductComponent {
 
   initProductForm(): void {
     this.productForm = this._formBuilder.group({
-      productName: ['', Validators.required],
+      name: ['', Validators.required],
       price: ['', Validators.required],
-      hsnCode: [''],
+      HSNCode: [''],
       $key: [''],
     });
   }
@@ -51,9 +51,9 @@ export class NewProductComponent {
     this.initProductForm();
     if (this.product) {
       this.productForm.patchValue({
-        productName: this.product.name,
+        name: this.product.name,
         price: this.product.price,
-        hsnCode: this.product.HSNCode,
+        HSNCode: this.product.HSNCode,
         $key: this.product.$key,
       });
     }
@@ -102,9 +102,9 @@ export class NewProductComponent {
     if (!productDetails.$key) return;
 
     this._commonService.editDoc(PRODUCT_LIST_COLLECTION_NAME, productDetails.$key, {
-      productName: productDetails.name,
+      name: productDetails.name,
       price: productDetails.price,
-      hsnCode: productDetails.HSNCode,
+      HSNCode: productDetails.HSNCode,
     });
     this._spinner.hide();
     this.saved.emit(productDetails);

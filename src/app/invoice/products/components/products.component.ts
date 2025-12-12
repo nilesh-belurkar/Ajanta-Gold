@@ -3,9 +3,8 @@ import { FormGroup, FormControl, FormBuilder, Validators, FormsModule, ReactiveF
 import { NgxSpinnerService } from 'ngx-spinner';
 import { debounceTime, take } from 'rxjs';
 import { ConfirmationComponent } from '../../common/components/confirmation/confirmation.component';
-import { CUSTOMER_LIST_COLLECTION_NAME, PRODUCT_LIST_COLLECTION_NAME } from '../../common/constants/constant';
+import { PRODUCT_LIST_COLLECTION_NAME } from '../../common/constants/constant';
 import { CommonService } from '../../common/services/common.service';
-import { NewCustomerComponent } from '../../customers/components/new-customer/new-customer.component';
 import { Product } from '../models/product.model';
 import { CommonModule } from '@angular/common';
 import { IconModule } from '@coreui/icons-angular';
@@ -101,10 +100,10 @@ export class ProductsComponent {
 
   loadProducts(): void {
     this._spinner.show();
-    this._commonService.getDocuments(PRODUCT_LIST_COLLECTION_NAME).subscribe((res: Product[]) => {
+    this._commonService.getDocuments(PRODUCT_LIST_COLLECTION_NAME).pipe(take(1)).subscribe((res: Product[]) => {
       this._spinner.hide();
       this.productList = res || [];
-      console.log("🚀 ~ this.customerList:", this.productList);
+      console.log("🚀 ~ this.productList:", this.productList);
       this.filteredProductList = [...this.productList];
       this.totalItems = this.filteredProductList.length;
       this.updatePagination();
@@ -130,19 +129,39 @@ export class ProductsComponent {
   openNewProductModal(product?: Product) {
     this.showModal = true;
     this.modalHost.clear();
+
+    // Destroy previous modal
+    if (this.modalRef) {
+      this.modalRef.destroy();
+      this.modalRef = undefined;
+    }
+
     this.modalRef = this.modalHost.createComponent(NewProductComponent);
 
     if (product) {
       this.modalRef.instance.product = product;
-      this.modalTitle = 'Edit product';
+      this.modalTitle = 'Edit Product';
     } else {
-      this.modalTitle = 'New product';
+      this.modalTitle = 'New Product';
     }
-    this.modalRef.instance.saved?.pipe(take(1)).subscribe(() => {
-      this.closeModal();
-    });
 
-    this.modalRef.instance.closed?.pipe(take(1)).subscribe(() => this.closeModal());
+    // Return a promise that resolves on save or reject on close
+    return new Promise<void>((resolve) => {
+      const savedSub = this.modalRef!.instance.saved?.subscribe(() => {
+        savedSub?.unsubscribe();
+        closedSub?.unsubscribe();
+        this.closeModal();
+        this.loadProducts();
+        resolve();
+      });
+
+      const closedSub = this.modalRef!.instance.closed?.subscribe(() => {
+        savedSub?.unsubscribe();
+        closedSub?.unsubscribe();
+        this.closeModal();
+        resolve();
+      });
+    });
   }
 
   closeModal() {
@@ -168,7 +187,7 @@ export class ProductsComponent {
     });
   }
 
-   get visiblePages(): number[] {
+  get visiblePages(): number[] {
     const isMobile = window.innerWidth <= 768;
     const maxPages = isMobile ? 5 : 10;
     return this._paginationService.getVisiblePages(this.currentPage, this.totalPages, maxPages);

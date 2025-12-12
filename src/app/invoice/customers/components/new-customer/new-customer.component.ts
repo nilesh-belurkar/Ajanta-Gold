@@ -3,12 +3,12 @@ import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonDirective, FormControlDirective, InputGroupComponent, InputGroupTextDirective, ModalModule } from '@coreui/angular';
 import { IconModule } from '@coreui/icons-angular';
-import { Customer } from '../../models/customer.model';
 
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { CommonService } from '../../../common/services/common.service';
 import { CUSTOMER_LIST_COLLECTION_NAME } from '../../../common/constants/constant';
+import { Customer } from '../../../billing/models/billing.model';
 
 @Component({
   selector: 'app-new-customer',
@@ -44,7 +44,7 @@ export class NewCustomerComponent implements OnInit {
       name: ['', Validators.required],
       address: ['', Validators.required],
       mobile: ['', [Validators.minLength(10), Validators.maxLength(10)]],
-      gst: [''],
+      GST: [''],
       $key: [''],
     });
   }
@@ -55,7 +55,7 @@ export class NewCustomerComponent implements OnInit {
         name: this.customer.name,
         address: this.customer.address,
         mobile: this.customer.mobile,
-        gst: this.customer.GST,
+        GST: this.customer.GST,
         $key: this.customer.$key,
       });
     }
@@ -68,8 +68,9 @@ export class NewCustomerComponent implements OnInit {
       return;
     }
 
-    this._spinner.show();
+
     const customerDetails: Customer = this.customerForm.value;
+    console.log("🚀 ~ customerDetails:", customerDetails)
     if (customerDetails.$key) {
       this.editCustomer(customerDetails);
     } else {
@@ -87,6 +88,7 @@ export class NewCustomerComponent implements OnInit {
 
 
   addCustomer(customerDetails: Customer) {
+    this._spinner.show();
     this._commonService.addDoc(CUSTOMER_LIST_COLLECTION_NAME, customerDetails)
       .then(() => {
         this._spinner.hide();
@@ -102,12 +104,12 @@ export class NewCustomerComponent implements OnInit {
 
   editCustomer(customerDetails: Customer) {
     if (!customerDetails.$key) return;
-
+    this._spinner.show();
     this._commonService.editDoc(CUSTOMER_LIST_COLLECTION_NAME, customerDetails.$key, {
       name: customerDetails.name,
       address: customerDetails.address,
       mobile: customerDetails.mobile,
-      gst: customerDetails.GST
+      GST: customerDetails.GST
     });
     this._spinner.hide();
     this.saved.emit(customerDetails);
