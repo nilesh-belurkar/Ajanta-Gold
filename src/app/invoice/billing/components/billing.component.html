@@ -45,10 +45,10 @@
       <tr *ngFor="let billing of paginatedBillingList; let i = index">
         <th scope="row">{{ i + 1 }}</th>
         <td title="{{ billing.billNumber }}">{{ billing.billNumber }}</td>
-        <td title="{{ billing.customerName }}">{{ billing.customerName }}</td>
+        <td title="{{ billing.customerInfo.name }}">{{ billing.customerInfo.name }}</td>
         <td title="View products details">
-            <button cButton color="info" class="text-white button" (click)="onProductDetails(billing.productDetails)"> <svg cIcon
-              name="cil-pencil" title="Edit billing details" class="mx-1" ></svg>Product Details</button>
+          <button cButton color="info" class="text-white button" (click)="onProductDetails(billing.productDetails)">
+            <svg cIcon name="cil-pencil" title="Edit billing details" class="mx-1"></svg>Product Details</button>
         </td>
 
         <td>
@@ -74,9 +74,7 @@
     <span class="page-link">...</span>
   </li>
 
-  <li class="page-item"
-      *ngFor="let page of visiblePages"
-      [class.active]="currentPage === page">
+  <li class="page-item" *ngFor="let page of visiblePages" [class.active]="currentPage === page">
     <button class="page-link" (click)="onPageChange(page)">{{ page }}</button>
   </li>
 

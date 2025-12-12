@@ -1,4 +1,4 @@
-import { Component, ComponentRef, EventEmitter, inject, Output, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, EventEmitter, inject, Output } from '@angular/core';
 import { FormGroup, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
@@ -6,7 +6,6 @@ import { CommonService } from '../../../../common/services/common.service';
 import { CommonModule } from '@angular/common';
 import { ButtonDirective, FormControlDirective, InputGroupComponent, InputGroupTextDirective, ModalModule } from '@coreui/angular';
 import { IconModule } from '@coreui/icons-angular';
-import { AddProduct } from '../../../models/billing.model';
 
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { Product } from '../../../../products/models/product.model';
@@ -42,7 +41,7 @@ export class AddProductComponent {
     showWeekNumbers: false,
   };
 
-  @Output() saved = new EventEmitter<AddProduct>();
+  @Output() saved = new EventEmitter<Product>();
   @Output() closed = new EventEmitter<void>();
   private _toastrService = inject(ToastrService);
   private _commonService = inject(CommonService);
@@ -53,6 +52,8 @@ export class AddProductComponent {
     this.isFormSubmitted = true;
     if (this.addProductFrom.valid) {
       this.addProductFrom.value.expiryDate = formatDate(this.addProductFrom.value.expiryDate),
+      console.log('save',this.addProductFrom.value);
+      
       this.saved.emit(this.addProductFrom.value);
     }
   }
@@ -74,11 +75,13 @@ export class AddProductComponent {
       this._spinner.hide();
       this.productList = res || [];
       this.filteredProductList = [...this.productList];
+      console.log("🚀 ~ this.filteredProductList:", this.filteredProductList)
     });
   }
 
   initAddProductForm(): void {
     this.addProductFrom = this._formBuilder.group({
+      $key: [''],
       productName: ['', Validators.required],
       productQty: ['', Validators.required],
       productPrice: ['', Validators.required],
@@ -98,8 +101,10 @@ export class AddProductComponent {
   }
 
   selectProduct(product: Product) {
+    console.log("🚀 ~ product:", product)
     this.addProductFrom.get('productName')?.setValue(product.name);
     this.addProductFrom.get('HSNCode')?.setValue(Number(product.HSNCode));
+    this.addProductFrom.get('$key')?.setValue(product.$key);
     this.showSuggestions = false;
   }
 }

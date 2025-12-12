@@ -1,12 +1,10 @@
-import { Component, ComponentRef, inject, Input, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ComponentRef, inject, ViewChild, ViewContainerRef } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { debounceTime, take } from 'rxjs';
 import { ConfirmationComponent } from '../../common/components/confirmation/confirmation.component';
-import { BILL_LIST_COLLECTION_NAME, PRODUCT_LIST_COLLECTION_NAME } from '../../common/constants/constant';
+import { BILL_LIST_COLLECTION_NAME } from '../../common/constants/constant';
 import { CommonService } from '../../common/services/common.service';
-import { Product } from '../../products/models/product.model';
-import { NewProductComponent } from '../../products/components/new-product/new-product.component';
 import {
   ButtonDirective,
   FormControlDirective,
@@ -22,6 +20,7 @@ import { OrderDetailsComponent } from '../../orders/components/order-details/ord
 import { ToastrService } from 'ngx-toastr';
 import { BillPreviewComponent } from './bill-preview/bill-preview.component';
 import { Router } from '@angular/router';
+import { Bill } from '../models/billing.model';
 
 @Component({
   selector: 'app-billing',
@@ -41,9 +40,9 @@ import { Router } from '@angular/router';
   styleUrl: './billing.component.scss'
 })
 export class BillingComponent {
-  billingList: any[] = [];
-  filteredBillingList: any[] = [];
-  paginatedBillingList: any[] = [];
+  billingList: Bill[] = [];
+  filteredBillingList: Bill[] = [];
+  paginatedBillingList: Bill[] = [];
   billingForm!: FormGroup;
   isFormSubmitted: boolean = false;
   searchTerm = new FormControl('');
@@ -93,7 +92,6 @@ export class BillingComponent {
 
   initBillingForm(): void {
     this.billingForm = this._formBuilder.group({
-      firestoreId: [null],
       billingcustomerName: ['', Validators.required],
       address: ['', Validators.required],
       mobile: ['', [Validators.minLength(10), Validators.maxLength(10)]],
@@ -110,10 +108,10 @@ export class BillingComponent {
 
   loadBillings(): void {
     this._spinner.show();
-    this._commonService.getDocuments(BILL_LIST_COLLECTION_NAME).subscribe((res: any[]) => {
+    this._commonService.getDocuments(BILL_LIST_COLLECTION_NAME).pipe(take(1)).subscribe((res: any[]) => {
       this._spinner.hide();
       this.billingList = res || [];
-      console.log("🚀 ~ this.billingList:", this.billingList[0]);
+      console.log("🚀 ~ this.billingList:", JSON.stringify(this.billingList));
       this.filteredBillingList = [...this.billingList];
       this.totalItems = this.filteredBillingList.length;
       this.updatePagination();
@@ -136,24 +134,46 @@ export class BillingComponent {
     this.updatePagination();
   }
 
-  openNewBillingModal(bill?: any) {
-    console.log("🚀 ~ bill:", bill)
+
+  openNewBillingModal(existingBill?: Bill) {
     this.showModal = true;
     this.modalHost.clear();
+
+    // Destroy previous modal
+    if (this.modalRef) {
+      this.modalRef.destroy();
+      this.modalRef = undefined;
+    }
+
     this.modalRef = this.modalHost.createComponent(NewGstBillComponent);
 
-    if (bill) {
-      this.modalRef.instance.bill = bill;
-      this.modalTitle = 'Edit GST bill';
+    if (existingBill) {
+      this.modalRef.instance.existingBill = existingBill;
+      this.modalTitle = 'Edit Bill';
     } else {
-      this.modalTitle = 'New GST bill';
+      this.modalTitle = 'New Bill';
     }
-    this.modalRef.instance.saved?.pipe(take(1)).subscribe(() => {
-      this.closeModal();
-    });
 
-    this.modalRef.instance.closed?.pipe(take(1)).subscribe(() => this.closeModal());
+    // Return a promise that resolves on save or reject on close
+    return new Promise<void>((resolve) => {
+      const savedSub = this.modalRef!.instance.saved?.subscribe(() => {
+        savedSub?.unsubscribe();
+        closedSub?.unsubscribe();
+        this.closeModal();
+        this.loadBillings();
+        resolve();
+      });
+
+      const closedSub = this.modalRef!.instance.closed?.subscribe(() => {
+        savedSub?.unsubscribe();
+        closedSub?.unsubscribe();
+        this.closeModal();
+        resolve();
+      });
+    });
   }
+
+
 
   closeModal() {
     this.showModal = false;
@@ -172,15 +192,15 @@ export class BillingComponent {
       if (result) {
         this._commonService.deleteDoc(BILL_LIST_COLLECTION_NAME, bill.$key).then(() => {
           this._toastrService.success('Billing deleted successfully');
+          this.loadBillings()
           this._spinner.hide();
-          this.loadBillings();
         }, error => {
           this._spinner.hide()
           this._toastrService.error('Error deleting billing: ' + error);
         });
       }
 
-      sub.unsubscribe(); // avoid leak
+      sub.unsubscribe();
     });
   }
 

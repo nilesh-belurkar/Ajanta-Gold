@@ -41,7 +41,7 @@
           ? ((customer.address || '') | slice:0:30) + '...'
           : (customer.address || '') }}
         </td>
-        <td title="{{ customer.mobile }}">{{ customer.mobile }}</td>
+        <td title="+91-{{ customer.mobile }}">+91-{{ customer.mobile }}</td>
         <td [class.text-danger]="((customer.GST || '').length !== 15)"
           [class.fw-bold]="((customer.GST || '').length !== 15)"
           [title]="((customer.GST || '').length !== 15 ? 'Wrong GST No' : (customer.GST || ''))">

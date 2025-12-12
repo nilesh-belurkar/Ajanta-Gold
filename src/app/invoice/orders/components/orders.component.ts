@@ -116,7 +116,7 @@ export class OrdersComponent {
     this.modalHost.clear();
     this.modalRef = this.modalHost.createComponent(OrderDetailsComponent);
     const columnOrder: string[] = ['name', 'mobile', 'orderDetails', 'status'];
-    const hiddenColumns = ['firestoreId', 'createdAt'];
+    const hiddenColumns = ['$key', 'createdAt'];
 
 
     const keys = Object.keys(order)
@@ -148,7 +148,7 @@ export class OrdersComponent {
     this._spinner.show();
 
     try {
-      await this._commonService.editDoc(ORDER_LIST, order.firestoreId, { status });
+      await this._commonService.editDoc(ORDER_LIST, order.$key, { status });
       this._toastrService.success('Status updated');
     } catch (error) {
       this._toastrService.error('Update failed');

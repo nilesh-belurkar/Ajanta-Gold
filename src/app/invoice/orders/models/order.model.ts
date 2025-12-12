@@ -1,7 +1,7 @@
 import { Timestamp } from '@angular/fire/firestore';
 
 export interface Order {
-    firestoreId: string;
+    $key: string;
     name: string;
     mobile: string;
     orderDetails: string;
