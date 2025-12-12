@@ -22,7 +22,7 @@ import {
 } from '@coreui/angular';
 
 import { IconDirective } from '@coreui/icons-angular';
-import { LoginService } from '../../../views/pages/login/services/login.service';
+import { LoginService } from '../../../login/services/login.service';
 
 @Component({
   selector: 'app-default-header',
