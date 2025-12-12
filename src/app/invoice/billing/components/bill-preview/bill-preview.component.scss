@@ -46,11 +46,6 @@
         padding: 0 80px 0px;
       }
 
-      .bg-active {
-        background: #f3f3f3;
-        color: #535353 !important;
-      }
-
       .active-color {
         color: #ff3200 !important;
       }
@@ -253,6 +248,8 @@
   table th {
     font-weight: 400;
     background: #f3f3f3 !important;
+    color: black;
+    font-weight: 500;
 
   }
 

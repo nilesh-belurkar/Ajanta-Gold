@@ -34,9 +34,4 @@ export const navItems: INavData[] = [
     url: '/invoice/billing',
     iconComponent: { name: 'cil-chart-pie' },
   },
-  {
-    name: 'Reports',
-    url: '/invoice/reports',
-    iconComponent: { name: 'cil-star' },
-  },
 ];

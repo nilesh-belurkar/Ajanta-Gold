@@ -53,7 +53,7 @@ export class GuestComponent implements OnInit {
     this.orderForm = this._formBuilder.group({
       name: ['', Validators.required],
       mobile: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
-      orderDetails: ['', [Validators.required, Validators.minLength(5)]],
+      orderDetails: ['', [Validators.required]],
       status: ['Pending'],
     });
   }
