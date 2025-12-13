@@ -6,13 +6,11 @@ import { Bill } from '../models/billing.model';
 })
 export class BillingService {
 
-  private readonly GST_PERCENT = 18; // 18% GST
-
   constructor() { }
 
   prepareInvoice(billDetails: Bill) {
     let subTotal = 0;
-    let totalDiscountAmount = billDetails.discount || 0;
+    let totalDiscountAmount = 0;
     let totalTax = 0;
 
     const products = billDetails.products.map(p => {
@@ -23,12 +21,6 @@ export class BillingService {
       const amount = qty * rate;
       subTotal += amount;
 
-      // Taxable amount is after invoice-level discount proportionally
-      const proportionDiscount = totalDiscountAmount > 0 ? (amount / subTotal) * totalDiscountAmount : 0;
-      const taxable = amount - proportionDiscount;
-
-      const gst = +(taxable * (this.GST_PERCENT / 100)).toFixed(2);
-      totalTax += gst;
 
       return {
         $key: p.$key || null,
@@ -43,7 +35,9 @@ export class BillingService {
       };
     });
 
-    const grandTotal = +(subTotal - totalDiscountAmount + totalTax).toFixed(0); // round to whole number
+    totalDiscountAmount = subTotal / 100 * billDetails.discount;
+    totalTax = (subTotal - totalDiscountAmount) / 100 * 18;
+    const grandTotal = +(subTotal - totalDiscountAmount + totalTax).toFixed(0);
 
     return {
       $key: billDetails.$key || null,
@@ -63,7 +57,7 @@ export class BillingService {
       totalTax: +totalTax.toFixed(2),
       grandTotal,
       createdAt: new Date(billDetails.createdAt),
-      updatedAt: new Date() // current timestamp
+      updatedAt: new Date()
     };
   }
 }

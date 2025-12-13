@@ -35,7 +35,6 @@ export class CommonService {
 
 
   getDocuments(collectionName: string, year?: number): Observable<any[]> {
-    console.log("🚀 ~ year:", year)
     const ref = collection(this._firestore, collectionName);
 
     let q;

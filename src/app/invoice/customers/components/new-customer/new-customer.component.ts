@@ -70,7 +70,6 @@ export class NewCustomerComponent implements OnInit {
 
 
     const customerDetails: Customer = this.customerForm.value;
-    console.log("🚀 ~ customerDetails:", customerDetails)
     if (customerDetails.$key) {
       this.editCustomer(customerDetails);
     } else {

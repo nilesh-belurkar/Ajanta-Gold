@@ -120,7 +120,6 @@ export class BillingComponent {
     this._commonService.getDocuments(BILL_LIST_COLLECTION_NAME, this.currentYear).pipe(take(1)).subscribe((res: any[]) => {
       this._spinner.hide();
       this.billingList = res || [];
-      console.log("🚀 ~ this.billingList:", JSON.stringify(this.billingList));
       this.filteredBillingList = [...this.billingList];
       this.totalItems = this.filteredBillingList.length;
       this.updatePagination();
@@ -131,7 +130,6 @@ export class BillingComponent {
     const start = (this.currentPage - 1) * this.pageSize;
     const end = start + this.pageSize;
     this.paginatedBillingList = this.filteredBillingList.slice(start, end);
-    console.log("🚀 ~ this.paginatedBillingList:", this.paginatedBillingList)
   }
 
   get totalPages(): number {

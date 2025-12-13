@@ -8,6 +8,7 @@ export interface Product {
   freeGoods?: number;
   expiryDate?: string;
   isDuplicate?: boolean;
+  amount?:number;
 }
 
 export interface Customer {
@@ -30,4 +31,8 @@ export interface Bill {
   createdAt: string | Date;
   products: Product[];
   customerInfo: Customer;
+  subTotal:number;
+  totalDiscountAmount:number;
+  totalTax:number;
+  grandTotal:number;
 }

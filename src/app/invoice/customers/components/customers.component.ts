@@ -97,7 +97,6 @@ export class CustomersComponent implements OnInit {
         this._spinner.hide();
         this.customerList = res || [];
         this.filteredCustomerList = [...this.customerList];
-        console.log("🚀 ~ this.customerList", this.customerList);
         this.totalItems = this.filteredCustomerList.length;
         this.updatePagination();
       });
