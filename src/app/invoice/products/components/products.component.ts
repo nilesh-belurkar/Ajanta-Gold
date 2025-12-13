@@ -103,7 +103,6 @@ export class ProductsComponent {
     this._commonService.getDocuments(PRODUCT_LIST_COLLECTION_NAME).pipe(take(1)).subscribe((res: Product[]) => {
       this._spinner.hide();
       this.productList = res || [];
-      console.log("🚀 ~ this.productList:", this.productList);
       this.filteredProductList = [...this.productList];
       this.totalItems = this.filteredProductList.length;
       this.updatePagination();

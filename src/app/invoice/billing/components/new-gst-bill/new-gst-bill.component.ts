@@ -91,7 +91,6 @@ export class NewGstBillComponent implements OnInit {
   }
 
   editBill(bill: any) {
-    console.log("🚀 ~ bill:", bill)
     this._spinner.show();
     if (!bill.$key) return;
 
@@ -111,7 +110,6 @@ export class NewGstBillComponent implements OnInit {
   ngOnInit(): void {
     this.initGstBillForm();
     this.loadCustomers();
-    console.log("🚀 ~ this.existingBill:", this.existingBill)
     if (this.existingBill) {
       this.existingBill.billDate = convertToDDMMYYYY(this.existingBill?.billDate);
       this.gstBillForm.patchValue({

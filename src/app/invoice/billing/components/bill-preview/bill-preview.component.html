@@ -1,10 +1,10 @@
-<div class="invoice-wrapper">
+<div class="invoice-wrapper" *ngIf="billDetails">
   <div class="invoice-container">
-    <div class="invoice-1">
+    <div class="invoice-1 print-area" id="invoice-wrapper">
       <div class="row">
         <div class="col-12">
-          <div class="invoice-inner " id="wrapper">
-            <div class="invoice-info " id="invoice_wrapper">
+          <div class="invoice-inner">
+            <div class="invoice-info ">
               <section class="invoice-headar">
                 <div class="row g-0">
                   <div class="col-8">
@@ -29,10 +29,13 @@
                   </div>
                   <div class="col-4 invoice-id">
                     <div class="info">
-                      <h1 role="button" class="color-white inv-header-1">Invoice</h1>
-                      <p class="color-white mb-1 fw-normal">Invoice Number <span># 1</span></p>
-                      <p class="color-white mb-1 fw-normal">Invoice Date <span>01-Dec-2025</span></p>
-                      <p class="color-white mb-0 fw-normal">Vehicle Number <span>MH-26 BE 7136</span>
+                      <h1 role="button" class="color-white inv-header-1" (click)="generatePDF()">Invoice</h1>
+                      <p class="color-white mb-1 fw-normal">Invoice Number <span>#
+                          {{this.billDetails.billNumber}}</span></p>
+                      <p class="color-white mb-1 fw-normal">Invoice Date <span> {{this.billDetails.billDate |
+                          date:'dd-MMM-yyyy' }}</span></p>
+                      <p class="color-white mb-0 fw-normal">Vehicle Number <span>{{this.billDetails.vehicleNumber
+                          }}</span>
                       </p>
                     </div>
                   </div>
@@ -43,11 +46,11 @@
                   <div class="col-6  ml-2">
                     <div class="invoice-number">
                       <h4 class="inv-title-1">Invoice To</h4>
-                      <h2 class="name mb-10">Vyankatesh Distributor</h2>
+                      <h2 class="name mb-10">{{this.billDetails.customerInfo.name }}</h2>
                       <p class="customer-address">
-                        Address: Parli-Vaijanath <br />
-                        Mobile: +91 9423470784 <br />
-                        GST: 27AWEPS2208Q1Z1 <br />
+                        Address: {{this.billDetails.customerInfo.address }} <br />
+                        Mobile: +91-{{this.billDetails.customerInfo.mobile }} <br />
+                        GST: {{this.billDetails.customerInfo.GST }} <br />
                       </p>
                     </div>
                   </div>
@@ -56,7 +59,7 @@
               <section class="product-details-table">
                 <div class="table-responsive">
                   <table class="table mb-0  invoice-table">
-                    <thead >
+                    <thead>
                       <tr class="tr">
                         <th>Sr.</th>
                         <th class="pl0 text-start">Product Name</th>
@@ -66,272 +69,52 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr class="tr2">
+                      <tr *ngFor="let product of this.billDetails.products; let  i=index">
                         <td>
                           <div class="item-desc-1">
-                            <span>1</span>
+                            <span>{{i+1}}</span>
                           </div>
                         </td>
                         <td class="pl0">
                           <div class="product-description">
-                            <span>Ajanta Gold Black Phenyl 1 LIT</span>
+                            <span>{{product.productName}}</span>
                           </div>
                           <div class="batch-hsn-goods-expiry">
                             <div>
-                              <span> <Strong>Batch</Strong> - 19&nbsp;| </span>
-                              <span> <Strong>&nbsp;HSN Code</Strong> - 38089400</span>
+                              <span *ngIf="product.batchNumber"> <Strong>Batch</Strong> - {{product.batchNumber}}&nbsp;|
+                              </span>
+                              <span *ngIf="product.HSNCode"> <Strong>&nbsp;HSN Code</Strong> -
+                                {{product.HSNCode}}</span>
                             </div>
                             <div>
-                              <span> <strong>Free Goods </strong> - 10 Qty&nbsp;| </span>
-                              <span> <strong>&nbsp;Expiry Date</strong> - 25-09-2026</span>
+                              <span *ngIf="product.freeGoods"> <strong>Free Goods </strong> - {{product.freeGoods}}
+                                Qty&nbsp;| </span>
+                              <span *ngIf="product.expiryDate"> <strong>&nbsp;Expiry Date</strong> -
+                                {{product.expiryDate}}</span>
                             </div>
                           </div>
                         </td>
-                        <td class="text-center">60</td>
-                        <td class="text-center"> ₹136.00</td>
-                        <td class="text-end">₹8,160.00</td>
+                        <td class="text-center">{{product.productQty}}</td>
+                        <td class="text-center">{{product.productPrice | currency:'INR':'symbol':'1.2-2'}}</td>
+                        <td class="text-end">{{product.amount | currency:'INR':'symbol':'1.2-2'}}</td>
                       </tr>
-                      <tr class="tr2">
-                        <td>
-                          <div class="item-desc-1">
-                            <span>1</span>
-                          </div>
-                        </td>
-                        <td class="pl0">
-                          <div class="product-description">
-                            <span>Ajanta Gold Black Phenyl 1 LIT</span>
-                          </div>
-                          <div class="batch-hsn-goods-expiry">
-                            <div>
-                              <span> <Strong>Batch</Strong> - 19&nbsp;| </span>
-                              <span> <Strong>&nbsp;HSN Code</Strong> - 38089400</span>
-                            </div>
-                            <div>
-                              <span> <strong>Free Goods </strong> - 10 Qty&nbsp;| </span>
-                              <span> <strong>&nbsp;Expiry Date</strong> - 25-09-2026</span>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="text-center">60</td>
-                        <td class="text-center"> ₹136.00</td>
-                        <td class="text-end">₹8,160.00</td>
-                      </tr>
-                      <tr class="tr2">
-                        <td>
-                          <div class="item-desc-1">
-                            <span>1</span>
-                          </div>
-                        </td>
-                        <td class="pl0">
-                          <div class="product-description">
-                            <span>Ajanta Gold Black Phenyl 1 LIT</span>
-                          </div>
-                          <div class="batch-hsn-goods-expiry">
-                            <div>
-                              <span> <Strong>Batch</Strong> - 19&nbsp;| </span>
-                              <span> <Strong>&nbsp;HSN Code</Strong> - 38089400</span>
-                            </div>
-                            <div>
-                              <span> <strong>Free Goods </strong> - 10 Qty&nbsp;| </span>
-                              <span> <strong>&nbsp;Expiry Date</strong> - 25-09-2026</span>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="text-center">60</td>
-                        <td class="text-center"> ₹136.00</td>
-                        <td class="text-end">₹8,160.00</td>
-                      </tr>
-                      <tr class="tr2">
-                        <td>
-                          <div class="item-desc-1">
-                            <span>1</span>
-                          </div>
-                        </td>
-                        <td class="pl0">
-                          <div class="product-description">
-                            <span>Ajanta Gold Black Phenyl 1 LIT</span>
-                          </div>
-                          <div class="batch-hsn-goods-expiry">
-                            <div>
-                              <span> <Strong>Batch</Strong> - 19&nbsp;| </span>
-                              <span> <Strong>&nbsp;HSN Code</Strong> - 38089400</span>
-                            </div>
-                            <div>
-                              <span> <strong>Free Goods </strong> - 10 Qty&nbsp;| </span>
-                              <span> <strong>&nbsp;Expiry Date</strong> - 25-09-2026</span>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="text-center">60</td>
-                        <td class="text-center"> ₹136.00</td>
-                        <td class="text-end">₹8,160.00</td>
-                      </tr>
-                      <tr class="tr2">
-                        <td>
-                          <div class="item-desc-1">
-                            <span>1</span>
-                          </div>
-                        </td>
-                        <td class="pl0">
-                          <div class="product-description">
-                            <span>Ajanta Gold Black Phenyl 1 LIT</span>
-                          </div>
-                          <div class="batch-hsn-goods-expiry">
-                            <div>
-                              <span> <Strong>Batch</Strong> - 19&nbsp;| </span>
-                              <span> <Strong>&nbsp;HSN Code</Strong> - 38089400</span>
-                            </div>
-                            <div>
-                              <span> <strong>Free Goods </strong> - 10 Qty&nbsp;| </span>
-                              <span> <strong>&nbsp;Expiry Date</strong> - 25-09-2026</span>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="text-center">60</td>
-                        <td class="text-center"> ₹136.00</td>
-                        <td class="text-end">₹8,160.00</td>
-                      </tr>
-                      <tr class="tr2">
-                        <td>
-                          <div class="item-desc-1">
-                            <span>1</span>
-                          </div>
-                        </td>
-                        <td class="pl0">
-                          <div class="product-description">
-                            <span>Ajanta Gold Black Phenyl 1 LIT</span>
-                          </div>
-                          <div class="batch-hsn-goods-expiry">
-                            <div>
-                              <span> <Strong>Batch</Strong> - 19&nbsp;| </span>
-                              <span> <Strong>&nbsp;HSN Code</Strong> - 38089400</span>
-                            </div>
-                            <div>
-                              <span> <strong>Free Goods </strong> - 10 Qty&nbsp;| </span>
-                              <span> <strong>&nbsp;Expiry Date</strong> - 25-09-2026</span>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="text-center">60</td>
-                        <td class="text-center"> ₹136.00</td>
-                        <td class="text-end">₹8,160.00</td>
-                      </tr>
-                      <tr class="tr2">
-                        <td>
-                          <div class="item-desc-1">
-                            <span>1</span>
-                          </div>
-                        </td>
-                        <td class="pl0">
-                          <div class="product-description">
-                            <span>Ajanta Gold Black Phenyl 1 LIT</span>
-                          </div>
-                          <div class="batch-hsn-goods-expiry">
-                            <div>
-                              <span> <Strong>Batch</Strong> - 19&nbsp;| </span>
-                              <span> <Strong>&nbsp;HSN Code</Strong> - 38089400</span>
-                            </div>
-                            <div>
-                              <span> <strong>Free Goods </strong> - 10 Qty&nbsp;| </span>
-                              <span> <strong>&nbsp;Expiry Date</strong> - 25-09-2026</span>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="text-center">60</td>
-                        <td class="text-center"> ₹136.00</td>
-                        <td class="text-end">₹8,160.00</td>
-                      </tr>
-                      <tr class="tr2">
-                        <td>
-                          <div class="item-desc-1">
-                            <span>1</span>
-                          </div>
-                        </td>
-                        <td class="pl0">
-                          <div class="product-description">
-                            <span>Ajanta Gold Black Phenyl 1 LIT</span>
-                          </div>
-                          <div class="batch-hsn-goods-expiry">
-                            <div>
-                              <span> <Strong>Batch</Strong> - 19&nbsp;| </span>
-                              <span> <Strong>&nbsp;HSN Code</Strong> - 38089400</span>
-                            </div>
-                            <div>
-                              <span> <strong>Free Goods </strong> - 10 Qty&nbsp;| </span>
-                              <span> <strong>&nbsp;Expiry Date</strong> - 25-09-2026</span>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="text-center">60</td>
-                        <td class="text-center"> ₹136.00</td>
-                        <td class="text-end">₹8,160.00</td>
-                      </tr>
-                      <tr class="tr2">
-                        <td>
-                          <div class="item-desc-1">
-                            <span>9</span>
-                          </div>
-                        </td>
-                        <td class="pl0">
-                          <div class="product-description">
-                            <span>Ajanta Gold Black Phenyl 1 LIT</span>
-                          </div>
-                          <div class="batch-hsn-goods-expiry">
-                            <div>
-                              <span> <Strong>Batch</Strong> - 19&nbsp;| </span>
-                              <span> <Strong>&nbsp;HSN Code</Strong> - 38089400</span>
-                            </div>
-                            <div>
-                              <span> <strong>Free Goods </strong> - 10 Qty&nbsp;| </span>
-                              <span> <strong>&nbsp;Expiry Date</strong> - 25-09-2026</span>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="text-center">60</td>
-                        <td class="text-center"> ₹136.00</td>
-                        <td class="text-end">₹8,160.00</td>
-                      </tr>
-                      <tr class="tr2">
-                        <td>
-                          <div class="item-desc-1">
-                            <span>10</span>
-                          </div>
-                        </td>
-                        <td class="pl0">
-                          <div class="product-description">
-                            <span>Ajanta Gold Black Phenyl 1 LIT</span>
-                          </div>
-                          <div class="batch-hsn-goods-expiry">
-                            <div>
-                              <span> <Strong>Batch</Strong> - 19&nbsp;| </span>
-                              <span> <Strong>&nbsp;HSN Code</Strong> - 38089400</span>
-                            </div>
-                            <div>
-                              <span> <strong>Free Goods </strong> - 10 Qty&nbsp;| </span>
-                              <span> <strong>&nbsp;Expiry Date</strong> - 25-09-2026</span>
-                            </div>
-                          </div>
-                        </td>
-                        <td class="text-center">60</td>
-                        <td class="text-center"> ₹136.00</td>
-                        <td class="text-end">₹8,160.00</td>
-                      </tr>
-
-                      <tr class="tr2">
+                      <tr>
                         <td></td>
                         <td></td>
                         <td></td>
                         <td class="text-center font-weight-bold">SubTotal</td>
-                        <td class="text-end font-weight-bold">₹15,100.00</td>
+                        <td class="text-end font-weight-bold">{{this.billDetails.subTotal |
+                          currency:'INR':'symbol':'1.2-2'}}</td>
                       </tr>
-                      <tr class="tr2">
+                      <tr>
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td class="text-center">23% Discount</td>
-                        <td class="text-end">-₹3,4753.00</td>
+                        <td class="text-center">{{this.billDetails.discount}}% Discount</td>
+                        <td class="text-end">-{{this.billDetails.totalDiscountAmount | currency:'INR':'symbol':'1.2-2'}}
+                        </td>
                       </tr>
-                      <tr class="tr2">
+                      <tr>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -343,14 +126,16 @@
                             <span>(9% CGST + 9% SGST) </span>
                           </div>
                         </td>
-                        <td class="text-end gst-amount-block">+₹2,092.86</td>
+                        <td class="text-end gst-amount-block">+{{this.billDetails.totalTax |
+                          currency:'INR':'symbol':'1.2-2'}}</td>
                       </tr>
-                      <tr class="tr2">
+                      <tr>
                         <td></td>
                         <td></td>
                         <td></td>
                         <td class="text-center f-w-600 active-color">Grand Total</td>
-                        <td class="f-w-600 text-end active-color">₹1333,720.00 </td>
+                        <td class="f-w-600 text-end active-color">{{this.billDetails.grandTotal |
+                          currency:'INR':'symbol':'1.2-2'}} </td>
                       </tr>
                     </tbody>
                   </table>
@@ -366,28 +151,31 @@
                   <div class="col-6">
                     <div class="mb-30 float-right">
                       <h3 class="inv-title-1 text-center">Bank Details</h3>
-                      <table class="text-14 bank-details-table">
-                        <tr>
-                          <td><strong>Account Name</strong></td>
-                          <td>Shree Laxman Chemicals</td>
-                        </tr>
-                        <tr>
-                          <td><strong>Account No (Cash Credit)</strong></td>
-                          <td>5374665577</td>
-                        </tr>
-                        <tr>
-                          <td><strong>Bank Name</strong></td>
-                          <td>Central Bank of India</td>
-                        </tr>
-                        <tr>
-                          <td><strong>Branch Name</strong></td>
-                          <td>Cidco Nanded</td>
-                        </tr>
-                        <tr>
-                          <td><strong>IFSC Code</strong></td>
-                          <td>CBIN0284980</td>
-                        </tr>
-                      </table>
+                      <div class="table-responsive">
+                        <table class="table mb-0  invoice-table">
+                          <tr>
+                            <td>Account Name</td>
+                            <td>Shree Laxman Chemicals</td>
+                          </tr>
+                          <tr>
+                            <td>Account No (Cash Credit)</td>
+                            <td>5374665577</td>
+                          </tr>
+                          <tr>
+                            <td>Bank Name</td>
+                            <td>Central Bank of India</td>
+                          </tr>
+                          <tr>
+                            <td>Branch Name</td>
+                            <td>Cidco Nanded</td>
+                          </tr>
+                          <tr>
+                            <td>IFSC Code</td>
+                            <td>CBIN0284980</td>
+                          </tr>
+
+                        </table>
+                      </div>
 
                     </div>
                   </div>

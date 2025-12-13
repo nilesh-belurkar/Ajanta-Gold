@@ -52,8 +52,6 @@ export class AddProductComponent {
     this.isFormSubmitted = true;
     if (this.addProductFrom.valid) {
       this.addProductFrom.value.expiryDate = formatDate(this.addProductFrom.value.expiryDate),
-      console.log('save',this.addProductFrom.value);
-      
       this.saved.emit(this.addProductFrom.value);
     }
   }
@@ -75,7 +73,6 @@ export class AddProductComponent {
       this._spinner.hide();
       this.productList = res || [];
       this.filteredProductList = [...this.productList];
-      console.log("🚀 ~ this.filteredProductList:", this.filteredProductList)
     });
   }
 
@@ -101,7 +98,6 @@ export class AddProductComponent {
   }
 
   selectProduct(product: Product) {
-    console.log("🚀 ~ product:", product)
     this.addProductFrom.get('productName')?.setValue(product.name);
     this.addProductFrom.get('HSNCode')?.setValue(Number(product.HSNCode));
     this.addProductFrom.get('$key')?.setValue(product.$key);

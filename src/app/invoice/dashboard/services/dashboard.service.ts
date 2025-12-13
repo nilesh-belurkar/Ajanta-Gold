@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
-import { Firestore, collection, query, where, getDocs, getCountFromServer } from '@angular/fire/firestore';
+import { inject, Injectable } from '@angular/core';
+import { Firestore, collection, query, where, getDocs, getCountFromServer, collectionData, limit, orderBy } from '@angular/fire/firestore';
 
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
 
-  constructor(private firestore: Firestore) {}
+  private firestore = inject(Firestore);
+
 
   async getSummary() {
     const now = new Date();
@@ -63,5 +64,23 @@ export class DashboardService {
       monthlyRevenue,
       lowStockProducts: lowStockSnap.size
     };
+  }
+
+   queryCollection(collectionName: string, field: string, start: Date) {
+    const ref = collection(this.firestore, collectionName);
+    const q = query(ref, where(field, '>=', start));
+    return collectionData(q, { idField: '$key' });
+  }
+
+  getRecent(col: string) {
+    const ref = collection(this.firestore, col);
+    const q = query(ref, orderBy('createdAt', 'desc'), limit(10));
+    return collectionData(q, { idField: '$key' });
+  }
+
+  getInvoicesSince(start: Date) {
+    const ref = collection(this.firestore, 'billList');
+    const q = query(ref, where('createdAt', '>=', start));
+    return collectionData(q, { idField: '$key' });
   }
 }
