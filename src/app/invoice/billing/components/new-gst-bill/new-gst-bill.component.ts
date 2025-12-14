@@ -97,7 +97,7 @@ export class NewGstBillComponent implements OnInit {
     this._commonService.editDoc(BILL_LIST_COLLECTION_NAME, bill.$key, bill);
     this._spinner.hide();
     this._toastrService.success('Bill updated successfully');
-    this.closed.emit();
+    this.saved.emit(bill);
   }
 
 

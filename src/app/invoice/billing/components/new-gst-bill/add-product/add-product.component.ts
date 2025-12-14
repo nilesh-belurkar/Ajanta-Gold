@@ -10,7 +10,7 @@ import { IconModule } from '@coreui/icons-angular';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { Product } from '../../../../products/models/product.model';
 import { PRODUCT_LIST_COLLECTION_NAME } from '../../../../common/constants/constant';
-import { formatDate } from '../../../../common/utility';
+import { formatCalenderDate } from '../../../../common/utility';
 
 @Component({
   selector: 'app-add-product',
@@ -51,7 +51,7 @@ export class AddProductComponent {
   save() {
     this.isFormSubmitted = true;
     if (this.addProductFrom.valid) {
-      this.addProductFrom.value.expiryDate = formatDate(this.addProductFrom.value.expiryDate),
+      this.addProductFrom.value.expiryDate = formatCalenderDate(this.addProductFrom.value.expiryDate),
       this.saved.emit(this.addProductFrom.value);
     }
   }

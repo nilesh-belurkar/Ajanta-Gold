@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Bill } from '../models/billing.model';
+import {ddMMyyyyToFirestoreTimestamp } from '../../common/utility';
 
 @Injectable({
   providedIn: 'root',
@@ -42,7 +43,7 @@ export class BillingService {
     return {
       $key: billDetails.$key || null,
       billNumber: billDetails.billNumber,
-      billDate: new Date(billDetails.billDate),
+      billDate: ddMMyyyyToFirestoreTimestamp(billDetails.billDate),
       customerInfo: {
         name: billDetails.customerInfo.name,
         address: billDetails.customerInfo.address || '',

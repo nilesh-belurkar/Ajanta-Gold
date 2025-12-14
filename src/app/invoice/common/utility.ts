@@ -2,7 +2,7 @@ import { Timestamp } from "@angular/fire/firestore";
 
 
 
-export function formatDate(date: any): string {
+export function formatCalenderDate(date: any): string {
   if (!date) return '';
 
   const d = new Date(date);
@@ -12,9 +12,6 @@ export function formatDate(date: any): string {
 
   return `${day}-${month}-${year}`;
 }
-
-
-
 
 export function convertToDDMMYYYY(value: string | Timestamp | null): string | null {
   if (!value) return null;
@@ -56,44 +53,6 @@ export function convertToDDMMYYYY(value: string | Timestamp | null): string | nu
   return `${d}-${m}-${y}`;
 }
 
-
-
-export function formatExpiryDate(value: string | Timestamp | null): string | null {
-  if (!value) return null;
-
-  let date: Date;
-
-  if (value instanceof Timestamp) {
-    date = value.toDate();
-  } else if (typeof value === 'string') {
-    // Expecting DD-MM-YYYY format
-    const [day, month, year] = value.split('-').map(Number);
-    if (!day || !month || !year) return null;
-    date = new Date(year, month - 1, day);
-  } else {
-    return null; // unexpected type
-  }
-
-  if (isNaN(date.getTime())) return null;
-
-  // Format like: August 8, 2025 at 12:00:00 AM UTC+5:30
-  const options: Intl.DateTimeFormatOptions = {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true,
-    timeZoneName: 'short',
-    timeZone: 'Asia/Kolkata'
-  };
-
-  return new Intl.DateTimeFormat('en-US', options).format(date);
-}
-
-
-
 export function convertTimestamps(obj: any): any {
   if (!obj) return obj;
 
@@ -121,4 +80,26 @@ export function convertTimestamps(obj: any): any {
   }
 
   return obj;
+}
+
+export function ddMMyyyyToFirestoreTimestamp(
+  value: string | Date
+): Timestamp {
+
+  let date: Date;
+
+  if (value instanceof Date) {
+    date = value;
+  } else {
+    // expecting DD-MM-YYYY
+    const [day, month, year] = value.split('-').map(Number);
+
+    if (!day || !month || !year) {
+      throw new Error('Invalid date string format. Expected DD-MM-YYYY');
+    }
+
+    date = new Date(year, month - 1, day, 0, 24, 1);
+  }
+
+  return Timestamp.fromDate(date);
 }

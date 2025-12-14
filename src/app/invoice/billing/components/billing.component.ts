@@ -110,7 +110,7 @@ export class BillingComponent {
 
   filterBillings(searchTerm: string | null) {
     const term = (searchTerm ?? '').toLowerCase(); // safe null handling
-    this.filteredBillingList = this.billingList.filter(c => c.customerName.toLowerCase().includes(term));
+    this.filteredBillingList = this.billingList.filter(c => c.customerInfo.name.toLowerCase().includes(term));
     this.totalItems = this.filteredBillingList.length;
     this.updatePagination();
   }
@@ -194,10 +194,10 @@ export class BillingComponent {
   }
 
   async deleteBilling(bill: any) {
-    this.confirmModal.open(`Are you sure you want delete "${bill.customerName}"?`, 'Delete Confirmation');
+    this.confirmModal.open(`Are you sure you want delete "${bill.customerInfo.name}"?`, 'Delete Confirmation');
     const sub = this.confirmModal.confirmed.subscribe((result) => {
-      this._spinner.show();
       if (result) {
+      this._spinner.show();
         this._commonService.deleteDoc(BILL_LIST_COLLECTION_NAME, bill.$key).then(() => {
           this._toastrService.success('Billing deleted successfully');
           this.loadBillings(this.currentYear)
