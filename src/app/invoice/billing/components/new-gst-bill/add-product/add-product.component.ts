@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { FormGroup, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
@@ -8,9 +8,9 @@ import { ButtonDirective, FormControlDirective, InputGroupComponent, InputGroupT
 import { IconModule } from '@coreui/icons-angular';
 
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
-import { Product } from '../../../../products/models/product.model';
 import { PRODUCT_LIST_COLLECTION_NAME } from '../../../../common/constants/constant';
 import { formatCalenderDate } from '../../../../common/utility';
+import { Product } from '../../../models/billing.model';
 
 @Component({
   selector: 'app-add-product',
@@ -47,11 +47,13 @@ export class AddProductComponent {
   private _commonService = inject(CommonService);
   private _formBuilder = inject(FormBuilder);
   private _spinner = inject(NgxSpinnerService);
+  @Input() existingProduct?: Product;
+
 
   save() {
     this.isFormSubmitted = true;
     if (this.addProductFrom.valid) {
-      this.addProductFrom.value.expiryDate = formatCalenderDate(this.addProductFrom.value.expiryDate),
+      this.addProductFrom.value.expiryDate = formatCalenderDate(this.addProductFrom.value.expiryDate)
       this.saved.emit(this.addProductFrom.value);
     }
   }
@@ -65,6 +67,18 @@ export class AddProductComponent {
   ngOnInit(): void {
     this.initAddProductForm();
     this.loadProducts();
+
+    if (this.existingProduct) {
+      this.addProductFrom.patchValue({
+        productName: this.existingProduct.productName,
+        productQty: this.existingProduct.productQty,
+        productPrice: this.existingProduct.productPrice,
+        HSNCode: this.existingProduct.HSNCode,
+        batchNumber: this.existingProduct.batchNumber,
+        freeGoods: this.existingProduct.freeGoods,
+        expiryDate: this.existingProduct.expiryDate,
+      });
+    }
   }
 
   loadProducts(): void {
@@ -92,13 +106,13 @@ export class AddProductComponent {
   onProductInput(event: any) {
     const value = event.target.value.toLowerCase();
     this.filteredProductList = this.productList.filter(p =>
-      p.name.toLowerCase().includes(value)
+      p.productName.toLowerCase().includes(value)
     );
     this.showSuggestions = this.filteredProductList.length > 0 && value !== '';
   }
 
   selectProduct(product: Product) {
-    this.addProductFrom.get('productName')?.setValue(product.name);
+    this.addProductFrom.get('productName')?.setValue(product.productName);
     this.addProductFrom.get('HSNCode')?.setValue(Number(product.HSNCode));
     this.addProductFrom.get('$key')?.setValue(product.$key);
     this.showSuggestions = false;

@@ -10,8 +10,8 @@
         </c-input-group>
          <ul *ngIf="showSuggestions" class="autocomplete-list">
           <li *ngFor="let product of filteredProductList" (click)="selectProduct(product)">
-            <strong>{{ product.name }}</strong><br />
-            <small>Price - {{ product.price }} | HSN Code -  {{ product.HSNCode }}</small>
+            <strong>{{ product.productName }}</strong><br />
+            <small>Price - {{ product.productPrice }} | HSN Code -  {{ product.HSNCode }}</small>
           </li>
         </ul>
         <small class="validation-error"

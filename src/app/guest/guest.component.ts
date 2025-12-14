@@ -34,6 +34,10 @@ export class GuestComponent implements OnInit {
   images = [1, 2, 3].map((n) => `../../../assets/slider/${n}.jpg`);
   @ViewChild('carousel', { static: true }) carousel!: NgbCarousel;
   orderForm!: FormGroup;
+  isMobile = false;
+  allPhotos: any[] = [];
+  galleryPhotos: any[] = [];
+  private mobileIndexes = [0, 5, 8, 9, 10, 15, 19];
 
   constructor() {
     this._translateService.addLangs(['en', 'hi', 'mr']);
@@ -47,7 +51,30 @@ export class GuestComponent implements OnInit {
 
   ngOnInit(): void {
     this.initOrderForm();
+    this.isMobile = window.innerWidth <= 768;
+    this.getGallaryPhotos()
   }
+
+  getGallaryPhotos() {
+    this._translateService.get('GALLERY.PHOTOS').subscribe((photos: any[]) => {
+      if (!Array.isArray(photos)) {
+        this.allPhotos = [];
+        this.galleryPhotos = [];
+        return;
+      }
+
+      this.allPhotos = photos;
+
+      if (this.isMobile) {
+        this.galleryPhotos = photos.filter(
+          (_, index) => this.mobileIndexes.includes(index)
+        );
+      } else {
+        this.galleryPhotos = photos;
+      }
+    });
+  }
+
 
   initOrderForm(): void {
     this.orderForm = this._formBuilder.group({
