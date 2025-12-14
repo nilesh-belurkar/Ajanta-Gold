@@ -100,6 +100,25 @@ export class NewGstBillComponent implements OnInit {
     this.saved.emit(bill);
   }
 
+  editProduct(existingProduct: Product, index: number) {
+    this.showModal = true;
+    this.modalHost.clear();
+    this.modalRef = this.modalHost.createComponent(AddProductComponent);
+
+    if (existingProduct) {
+      this.modalRef.instance.existingProduct = existingProduct;
+      this.modalTitle = 'Edit Product';
+    } else {
+      this.modalTitle = 'New Product';
+    }
+
+    this.modalRef.instance.saved?.pipe(take(1)).subscribe((product: Product) => {
+      this.productList[index] = product;
+      this.markAllAsDuplicate();
+      this.closeModal();
+    });
+  }
+
 
   clear() {
     this.gstBillForm.reset();

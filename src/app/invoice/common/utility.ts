@@ -2,16 +2,38 @@ import { Timestamp } from "@angular/fire/firestore";
 
 
 
-export function formatCalenderDate(date: any): string {
-  if (!date) return '';
+export function formatCalenderDate(
+  value: Date | string
+): string {
 
-  const d = new Date(date);
-  const day = String(d.getDate()).padStart(2, '0');
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const year = d.getFullYear();
+  if (!value) return '';
 
-  return `${day}-${month}-${year}`;
+  // Case 1: already in DD-MM-YYYY → return as-is
+  if (typeof value === 'string') {
+    const ddmmyyyy = /^\d{2}-\d{2}-\d{4}$/;
+    if (ddmmyyyy.test(value)) {
+      return value;
+    }
+    throw new Error(`Invalid date string format: ${value}`);
+  }
+
+  // Case 2: Date object → convert
+  if (value instanceof Date) {
+    if (isNaN(value.getTime())) {
+      throw new Error('Invalid Date object');
+    }
+
+    const day = String(value.getDate()).padStart(2, '0');
+    const month = String(value.getMonth() + 1).padStart(2, '0');
+    const year = value.getFullYear();
+
+    return `${day}-${month}-${year}`;
+  }
+
+  // Should never happen
+  throw new Error('Unsupported date type');
 }
+
 
 export function convertToDDMMYYYY(value: string | Timestamp | null): string | null {
   if (!value) return null;

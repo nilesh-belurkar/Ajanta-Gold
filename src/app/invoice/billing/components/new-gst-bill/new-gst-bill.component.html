@@ -94,6 +94,8 @@
             <td title="{{ product.expiryDate }}">{{ product.expiryDate }}</td>
             <td title="{{ product.freeGoods }}">{{ product.freeGoods }}</td>
             <td>
+              <button cButton color="warning" class="text-white button" (click)="editProduct(product, i)"> <svg cIcon
+                  name="cil-pencil" title="Delete product details" class="mx-1"></svg>Edit</button>
               <button cButton color="danger" class="text-white button" (click)="deleteProduct(i)"> <svg cIcon
                   name="cil-trash" title="Delete product details" class="mx-1"></svg>Delete</button>
           </tr>
@@ -111,7 +113,7 @@
 
 <c-modal [visible]="showModal" backdrop="static" size="lg" alignment="center">
   <c-modal-header>
-    <h5 class="modal-title">Add Product</h5>
+    <h5 class="modal-title">{{modalTitle}}</h5>
     <button type="button" class="btn-close" aria-label="Close" (click)="closeModal()">
     </button>
   </c-modal-header>

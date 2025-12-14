@@ -87,7 +87,7 @@
             </tr>
           </thead>
           <tbody>
-            @for (customer of this.recentInvoices; track customer.customerName; let i = $index) {
+            @for (customer of this.recentInvoices; track customer.$key; let i = $index) {
             <tr>
               <td class="text-center">{{i+1}}</td>
               <td>
