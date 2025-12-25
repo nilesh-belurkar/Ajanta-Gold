@@ -5,10 +5,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonService } from '../../../common/services/common.service';
 import { BILL_LIST_COLLECTION_NAME } from '../../../common/constants/constant';
 import { Bill } from '../../models/billing.model';
-import { convertTimestamps } from '../../../common/utility';
+import { convertTimestamps, invoiceWhatsappMessage } from '../../../common/utility';
 import jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
 import { take } from 'rxjs';
+import { Functions, httpsCallable } from '@angular/fire/functions';
 
 
 @Component({
@@ -26,6 +27,7 @@ export class BillPreviewComponent implements OnInit {
   private _route = inject(ActivatedRoute);
   private _commonService = inject(CommonService);
   private _ngZone = inject(NgZone);
+  private _functions = inject(Functions);
   billId!: string;
   billDetails!: Bill;
   ngOnInit(): void {
@@ -81,6 +83,99 @@ export class BillPreviewComponent implements OnInit {
     });
 
   }
+
+  async capturePDFAndSendOnWhatsapp() {
+    const element = document.getElementById('invoice-wrapper');
+    if (!element) {
+      console.error('Invoice element not found');
+      return;
+    }
+
+    // 1️⃣ Render HTML → Canvas
+    const canvas = await html2canvas(element, {
+      scale: 3,
+      useCORS: true,
+      width: element.offsetWidth,
+      height: element.offsetHeight,
+      scrollX: -window.scrollX,
+      scrollY: -window.scrollY,
+      windowWidth: document.documentElement.offsetWidth,
+      windowHeight: document.documentElement.offsetHeight,
+    });
+
+    // 2️⃣ Canvas → PDF
+    const imgData = canvas.toDataURL('image/jpeg', 1.0);
+    const pdf = new jspdf({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4',
+    });
+
+    pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297, undefined, 'FAST');
+
+    // 3️⃣ PDF → Base64
+    const pdfBlob = pdf.output('blob');
+    const base64Pdf = await this.blobToBase64(pdfBlob);
+
+    const invoiceNo = this.billDetails.billNumber.toString();
+    const mobile = this.billDetails.customerInfo.mobile;
+    const name = this.billDetails.customerInfo.name;
+
+    // 4️⃣ Upload to Firebase (GEN-1 HTTP FUNCTION)
+    const url = await this.uploadInvoiceToFirebase(base64Pdf, invoiceNo);
+
+    // 5️⃣ Open WhatsApp
+    this.openWhatsApp(name, mobile, url, invoiceNo);
+  }
+
+  private blobToBase64(blob: Blob): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const result = reader.result as string;
+        resolve(result.split(',')[1]);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  }
+
+
+  openWhatsApp(name: string, mobile: string, url: string, invoiceNo: string) {
+    const phone = String(mobile).replace(/\D/g, '');
+
+    if (phone.length < 10) {
+      throw new Error('Invalid mobile number');
+    }
+
+    const msg = invoiceWhatsappMessage(name, invoiceNo, url);
+    const encoded = encodeURIComponent(msg);
+
+    window.open(`https://wa.me/91${phone}?text=${encoded}`, '_blank');
+  }
+
+  async uploadInvoiceToFirebase(base64Pdf: string, billNumber: string): Promise<string> {
+    const response = await fetch(
+      'https://us-central1-ajanta-gold.cloudfunctions.net/uploadInvoicePdf',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          base64Pdf,
+          invoiceNo: billNumber
+        })
+      }
+    );
+
+    if (!response.ok) {
+      const err = await response.text();
+      throw new Error(err);
+    }
+
+    const data = await response.json();
+    return data.url;
+  }
+
 
 
   // capturePDF() {

@@ -23,6 +23,8 @@ import { environment } from './environments/environment';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
+import { getFunctions } from 'firebase/functions';
+import { provideFunctions } from '@angular/fire/functions';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -60,6 +62,7 @@ export const appConfig: ApplicationConfig = {
       preventDuplicates: true,
       progressBar: true
     })),
+     provideFunctions(() => getFunctions(undefined, 'us-central1'))
   ],
 
 };
