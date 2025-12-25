@@ -87,7 +87,6 @@ export class AddProductComponent {
       this._spinner.hide();
       this.productList = res || [];
       this.filteredProductList = [...this.productList];
-      console.log("🚀 ~ this.filteredProductList:", this.filteredProductList)
     });
   }
 

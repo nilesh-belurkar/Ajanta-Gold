@@ -191,4 +191,14 @@ export class ProductsComponent {
     const maxPages = isMobile ? 5 : 10;
     return this._paginationService.getVisiblePages(this.currentPage, this.totalPages, maxPages);
   }
+
+   async upload(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+
+    const products = JSON.parse(await input.files[0].text());
+    const count = await this._commonService.importProducts(products);
+
+    console.log(`${count} products imported successfully`);
+  }
 }

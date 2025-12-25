@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Firestore, collection, doc, addDoc, deleteDoc, updateDoc, orderBy, query, limit } from '@angular/fire/firestore';
 import { collectionData, docData } from '@angular/fire/firestore';
 import { map, Observable } from 'rxjs';
-import { serverTimestamp, where } from 'firebase/firestore';
+import { serverTimestamp, where, writeBatch } from 'firebase/firestore';
 
 
 @Injectable({
@@ -143,5 +143,50 @@ export class CommonService {
     );
 
     return collectionData(q, { idField: '$key' });
+  }
+
+ async importCustomers(customers: any[]): Promise<number> {
+    if (!Array.isArray(customers)) {
+      throw new Error('Invalid data: customers must be an array');
+    }
+
+    const batch = writeBatch(this._firestore);
+    const colRef = collection(this._firestore, 'customer_list');
+
+    customers.forEach(customer => {
+      const docRef = doc(colRef); // auto document ID
+
+      batch.set(docRef, {
+        ...customer,
+        $key: docRef.id,          // same as document ID
+        createdAt: serverTimestamp()   // server timestamp
+      });
+    });
+
+    await batch.commit();
+    return customers.length;
+  }
+
+
+    async importProducts(products: any[]): Promise<number> {
+    if (!Array.isArray(products)) {
+      throw new Error('Invalid data: products must be an array');
+    }
+
+    const batch = writeBatch(this._firestore);
+    const colRef = collection(this._firestore, 'product_list');
+
+    products.forEach(product => {
+      const docRef = doc(colRef); // auto ID
+
+      batch.set(docRef, {
+        ...product,
+        $key: docRef.id,           // same as document ID
+        createdAt: serverTimestamp()
+      });
+    });
+
+    await batch.commit();
+    return products.length;
   }
 }

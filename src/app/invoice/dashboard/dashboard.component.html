@@ -27,7 +27,7 @@
     </c-widget-stat-a>
   </c-col>
   <c-col sm="6" xl="3">
-    <c-widget-stat-a color="warning" [title]="'New Customers (7 days)'">
+    <c-widget-stat-a color="warning" [title]="'Total Customers'">
       <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
         {{ newCustomersCount }}
         <span class="fw-normal" style="font-size: 12px;">
@@ -40,7 +40,7 @@
     </c-widget-stat-a>
   </c-col>
   <c-col sm="6" xl="3">
-    <c-widget-stat-a [title]="'New Products (7 days)'" color="info">
+    <c-widget-stat-a [title]="'Total Products'" color="info">
       <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
         <span>{{ newProductsCount }}</span>
         <span class="fw-normal" style="font-size: 12px;">

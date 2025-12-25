@@ -1,13 +1,12 @@
 export const environment = {
   firebase: {
-    projectId: 'ajanta-brand',
-    appId: '1:1064597679196:web:dd1cd393d825c5b2fbca99',
-    storageBucket: 'ajanta-brand.appspot.com',
-    locationId: 'us-central',
-    apiKey: 'AIzaSyAgZqk4Wjp45FUylEldCaLfkr1O8PbbdLg',
-    authDomain: 'ajanta-brand.firebaseapp.com',
-    messagingSenderId: '1064597679196',
-    measurementId: 'G-7JVKJXCVPK',
+    apiKey: "AIzaSyCpamCsvP91w_KPZfKk8p8YZfWCI-oaiRk",
+    authDomain: "ajanta-gold.firebaseapp.com",
+    projectId: "ajanta-gold",
+    storageBucket: "ajanta-gold.firebasestorage.app",
+    messagingSenderId: "1080577031600",
+    appId: "1:1080577031600:web:dc9fbf91de4cfa6a73ea75",
+    measurementId: "G-LXD9JLYFF5"
   },
   production: true
 };

@@ -193,4 +193,15 @@ export class CustomersComponent implements OnInit {
     const maxPages = isMobile ? 5 : 10;
     return this._paginationService.getVisiblePages(this.currentPage, this.totalPages, maxPages);
   }
+
+ async uploadCustomers(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
+
+    const file = input.files[0];
+    const customers = JSON.parse(await file.text());
+
+    const count = await this._commonService.importCustomers(customers);
+    console.log(`${count} customers imported successfully`);
+  }
 }
