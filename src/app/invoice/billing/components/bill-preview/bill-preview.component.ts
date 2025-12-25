@@ -145,7 +145,7 @@ export class BillPreviewComponent implements OnInit {
 
 
   openWhatsApp(name: string, mobile: string, url: string, invoiceNo: string) {
-    const phone = String(7841868668).replace(/\D/g, '');
+    const phone = String(mobile).replace(/\D/g, '');
 
     if (phone.length < 10) {
       throw new Error('Invalid mobile number');
