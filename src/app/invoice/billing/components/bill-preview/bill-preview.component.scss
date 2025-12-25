@@ -150,8 +150,8 @@
   }
 
   .logo-title {
-    font-weight: 400;
-    padding-left: 13px;
+    font-weight: 500;
+    padding-left: 14px;
   }
 
   .color-white {
@@ -193,7 +193,7 @@
 
   .table tr {
     border: none;
-      border: 1px solid black;
+    border: 1px solid black;
   }
 
   .table> :not(caption)>*>* {
@@ -285,12 +285,12 @@
 
   .table {
     tr {
-      border: none;
-      border: 1px solid black;
+      border: 0.2px solid lightgray;
+      border-bottom: none;
 
 
       td {
-        padding: 10px;
+        padding: 5px;
         border: none !important;
       }
 
@@ -299,68 +299,64 @@
       }
     }
 
-
-
-
-  }
-
-  
-  .table th {
-    font-weight: 500;
-    text-transform: uppercase;
-  }
-
-  .table tr {
-  }
-
-  .table> :not(caption)>*>* {
-    padding: 13px 20px;
-  }
-
-
-  .table> :not(caption)>*>* {
-    background-color: var(--bs-table-bg);
-    border-bottom-width: 0;
-  }
-
-  .table .pl0 {
-    padding-left: 0;
-  }
-
-  .table td.pl0 {
-    padding-left: 0;
-  }
-
-  .table td,
-  .table th {
-    vertical-align: middle;
-    border: none !important;
-  }
-
-  .table td {
-    font-size: 15px;
-    color: #555;
-  }
-
-  .qr-code {
-    padding-top: 50px;
-
-    img {
-      border: 1px solid #e9ecef;
+    tr:last-child {
+      border-bottom: 0.2px solid lightgray !important;
     }
+
+
+    .table th {
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+
+    .table> :not(caption)>*>* {
+      padding: 13px 20px;
+    }
+
+
+    .table> :not(caption)>*>* {
+      background-color: var(--bs-table-bg);
+      border-bottom-width: 0;
+    }
+
+    .table .pl0 {
+      padding-left: 0;
+    }
+
+    .table td.pl0 {
+      padding-left: 0;
+    }
+
+    .table td,
+    .table th {
+      vertical-align: middle;
+      border: none !important;
+    }
+
+    .table td {
+      font-size: 15px;
+      color: #555;
+    }
+
+    .qr-code {
+      padding-top: 50px;
+
+      img {
+        border: 1px solid #e9ecef;
+      }
+    }
+
+    .mb-30 {
+      margin-bottom: 30px;
+    }
+
+
+    .text-14 {
+      font-size: 14px;
+    }
+
+
   }
-
-  .mb-30 {
-    margin-bottom: 30px;
-  }
-
-
-  .text-14 {
-    font-size: 14px;
-  }
-
-
-
 
 }
 
@@ -388,10 +384,12 @@
 
   @page {
     size: A4;
-    margin: 0;   /* 🔥 kills browser margins */
+    margin: 0;
+    /* 🔥 kills browser margins */
   }
 
-  html, body {
+  html,
+  body {
     margin: 0 !important;
     padding: 0 !important;
     width: 100%;

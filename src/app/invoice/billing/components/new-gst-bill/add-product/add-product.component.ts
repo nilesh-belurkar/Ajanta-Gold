@@ -70,7 +70,7 @@ export class AddProductComponent {
 
     if (this.existingProduct) {
       this.addProductFrom.patchValue({
-        productName: this.existingProduct.productName,
+        name: this.existingProduct.name,
         productQty: this.existingProduct.productQty,
         productPrice: this.existingProduct.productPrice,
         HSNCode: this.existingProduct.HSNCode,
@@ -87,13 +87,14 @@ export class AddProductComponent {
       this._spinner.hide();
       this.productList = res || [];
       this.filteredProductList = [...this.productList];
+      console.log("🚀 ~ this.filteredProductList:", this.filteredProductList)
     });
   }
 
   initAddProductForm(): void {
     this.addProductFrom = this._formBuilder.group({
       $key: [''],
-      productName: ['', Validators.required],
+      name: ['', Validators.required],
       productQty: ['', Validators.required],
       productPrice: ['', Validators.required],
       HSNCode: [''],
@@ -105,14 +106,14 @@ export class AddProductComponent {
 
   onProductInput(event: any) {
     const value = event.target.value.toLowerCase();
-    this.filteredProductList = this.productList.filter(p =>
-      p.productName.toLowerCase().includes(value)
+    this.filteredProductList = this.productList.filter((p:any) =>
+      p.name.toLowerCase().includes(value)
     );
     this.showSuggestions = this.filteredProductList.length > 0 && value !== '';
   }
 
   selectProduct(product: Product) {
-    this.addProductFrom.get('productName')?.setValue(product.productName);
+    this.addProductFrom.get('name')?.setValue(product.name);
     this.addProductFrom.get('HSNCode')?.setValue(Number(product.HSNCode));
     this.addProductFrom.get('$key')?.setValue(product.$key);
     this.showSuggestions = false;

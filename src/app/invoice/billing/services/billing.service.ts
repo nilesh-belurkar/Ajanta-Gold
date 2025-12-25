@@ -25,7 +25,7 @@ export class BillingService {
 
       return {
         $key: p.$key || null,
-        productName: p.productName,
+        name: p.name,
         batchNumber: p.batchNumber,
         expiryDate: p.expiryDate,
         productQty: qty,

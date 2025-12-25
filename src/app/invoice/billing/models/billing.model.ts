@@ -1,6 +1,6 @@
 export interface Product {
   $key: string | null;
-  productName: string;
+  name: string;
   productQty: number;
   productPrice: number;
   HSNCode?: number;

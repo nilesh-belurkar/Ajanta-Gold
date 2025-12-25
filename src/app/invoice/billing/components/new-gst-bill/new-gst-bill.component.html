@@ -83,7 +83,7 @@
         <tbody *ngIf="productList.length">
           <tr *ngFor="let product of productList; let i =index">
             <th scope="row">{{ i + 1 }}</th>
-            <td title="{{ product.productName }}">{{ product.productName }}
+            <td title="{{ product.name }}">{{ product.name }}
               <br>
               <small *ngIf="product.isDuplicate" class="text-danger fw-bold">Duplicate product please remove one</small>
             </td>

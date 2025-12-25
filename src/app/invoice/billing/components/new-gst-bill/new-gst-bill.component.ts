@@ -205,20 +205,20 @@ export class NewGstBillComponent implements OnInit {
   markAllAsDuplicate(): void {
     const countMap: Record<string, number> = {};
 
-    // Count only valid productName
+    // Count only valid name
     this.productList.forEach((p: any) => {
-      const name = p.productName;
+      const name = p.name;
 
       if (name && name.trim() !== '') {
         countMap[name] = (countMap[name] || 0) + 1;
       }
     });
 
-    // Mark duplicates ONLY if productName exists + duplicate count > 1
+    // Mark duplicates ONLY if name exists + duplicate count > 1
     this.productList = this.productList.map((p: any) => {
-      const name = p.productName;
+      const name = p.name;
 
-      // If no productName => never duplicate
+      // If no name => never duplicate
       if (!name || name.trim() === '') {
         return { ...p, isDuplicate: false };
       }

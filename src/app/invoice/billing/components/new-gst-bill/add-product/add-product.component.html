@@ -5,12 +5,12 @@
       <div>
         <c-input-group>
           <span cInputGroupText>Product Name</span>
-          <input type="text" cFormControl formControlName="productName" placeholder="Enter product name" (input)="onProductInput($event)"
-            [class.is-invalid]="addProductFrom.get('productName')?.invalid && (addProductFrom.get('productName')?.touched || isFormSubmitted)">
+          <input type="text" cFormControl formControlName="name" placeholder="Enter product name" (input)="onProductInput($event)"
+            [class.is-invalid]="addProductFrom.get('name')?.invalid && (addProductFrom.get('name')?.touched || isFormSubmitted)">
         </c-input-group>
          <ul *ngIf="showSuggestions" class="autocomplete-list">
           <li *ngFor="let product of filteredProductList" (click)="selectProduct(product)">
-            <strong>{{ product.productName }}</strong><br />
+            <strong>{{ product.name }}</strong><br />
             <small>Price - {{ product.productPrice }} | HSN Code -  {{ product.HSNCode }}</small>
           </li>
         </ul>

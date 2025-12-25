@@ -225,7 +225,7 @@ export class BillingComponent {
     this.modalRef = this.modalHostOrderDetails.createComponent(OrderDetailsComponent);
 
     // Column priority
-    const columnOrder: string[] = ['productName', 'productPrice', 'productQty'];
+    const columnOrder: string[] = ['name', 'productPrice', 'productQty'];
 
     // Hidden columns
     const hiddenColumns = ['HSNCode', 'batchNumber', 'expiryDate', 'freeGoods', '$key'];
