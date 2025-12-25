@@ -10,6 +10,7 @@ import jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
 import { take } from 'rxjs';
 import { Functions, httpsCallable } from '@angular/fire/functions';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 
 @Component({
@@ -28,6 +29,7 @@ export class BillPreviewComponent implements OnInit {
   private _commonService = inject(CommonService);
   private _ngZone = inject(NgZone);
   private _functions = inject(Functions);
+ private _spinner = inject(NgxSpinnerService);
   billId!: string;
   billDetails!: Bill;
   ngOnInit(): void {
@@ -85,6 +87,7 @@ export class BillPreviewComponent implements OnInit {
   }
 
   async capturePDFAndSendOnWhatsapp() {
+    this._spinner.show();
     const element = document.getElementById('invoice-wrapper');
     if (!element) {
       console.error('Invoice element not found');
@@ -123,7 +126,7 @@ export class BillPreviewComponent implements OnInit {
 
     // 4️⃣ Upload to Firebase (GEN-1 HTTP FUNCTION)
     const url = await this.uploadInvoiceToFirebase(base64Pdf, invoiceNo);
-
+    this._spinner.hide();
     // 5️⃣ Open WhatsApp
     this.openWhatsApp(name, mobile, url, invoiceNo);
   }
@@ -142,7 +145,7 @@ export class BillPreviewComponent implements OnInit {
 
 
   openWhatsApp(name: string, mobile: string, url: string, invoiceNo: string) {
-    const phone = String(mobile).replace(/\D/g, '');
+    const phone = String(7841868668).replace(/\D/g, '');
 
     if (phone.length < 10) {
       throw new Error('Invalid mobile number');
@@ -170,6 +173,7 @@ export class BillPreviewComponent implements OnInit {
     if (!response.ok) {
       const err = await response.text();
       throw new Error(err);
+      this._spinner.hide();
     }
 
     const data = await response.json();
