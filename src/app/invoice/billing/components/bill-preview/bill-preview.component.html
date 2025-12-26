@@ -107,7 +107,7 @@
                         <td class="text-end font-weight-bold">{{this.billDetails.subTotal |
                           currency:'INR':'symbol':'1.2-2'}}</td>
                       </tr>
-                      <tr>
+                      <tr *ngIf="this.billDetails.discount">
                         <td></td>
                         <td></td>
                         <td></td>

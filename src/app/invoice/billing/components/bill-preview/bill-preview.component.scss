@@ -286,7 +286,13 @@
 
 .bank-details {
   padding: 0 50px 40px;
+    .qr-code {
+      padding-top: 50px;
 
+      img {
+        border: 1px solid #e9ecef;
+      }
+    }
   .table {
     tr {
       border: 0.2px solid lightgray;
@@ -342,13 +348,7 @@
       color: #555;
     }
 
-    .qr-code {
-      padding-top: 50px;
 
-      img {
-        border: 1px solid #e9ecef;
-      }
-    }
 
     .mb-30 {
       margin-bottom: 30px;
