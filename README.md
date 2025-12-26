@@ -1,12 +1,12 @@
-Ajanta Gold – Shree Laxman Chemicals
-📌 Project Overview
+## Ajanta Gold – Shree Laxman Chemicals
+## 📌 Project Overview
 
 Ajanta Gold is the official website project for Shree Laxman Chemicals, a company engaged in manufacturing, trading, and wholesaling industrial and household cleaning chemicals.
 
 ⚠️ Note:
 This website is currently under construction. Some images and text may not be updated yet.
 
-🏢 About the Company
+## 🏢 About the Company
 
 Founded in 2018, Shree Laxman Chemicals is an ISO-certified manufacturer, exporter, and distributor of industrial chemicals.
 
