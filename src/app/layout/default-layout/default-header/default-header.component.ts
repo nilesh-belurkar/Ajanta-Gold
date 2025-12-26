@@ -23,18 +23,24 @@ import {
 
 import { IconDirective } from '@coreui/icons-angular';
 import { LoginService } from '../../../login/services/login.service';
+import { CommonService } from '../../../invoice/common/services/common.service';
+import { User } from './models/user.model'
+import { take } from 'rxjs';
+import { USERS_COLLECTION_NAME } from '../../../invoice/common/constants/constant';
 
 @Component({
   selector: 'app-default-header',
   templateUrl: './default-header.component.html',
-  imports: [ContainerComponent, HeaderTogglerDirective, SidebarToggleDirective, IconDirective, HeaderNavComponent, NavLinkDirective, RouterLink, NgTemplateOutlet, BreadcrumbRouterComponent, DropdownComponent, DropdownToggleDirective, AvatarComponent, DropdownMenuDirective, DropdownItemDirective, DropdownDividerDirective]
+  imports: [ContainerComponent, HeaderTogglerDirective, SidebarToggleDirective, IconDirective, HeaderNavComponent, NavLinkDirective, NgTemplateOutlet, BreadcrumbRouterComponent, DropdownComponent, DropdownToggleDirective, AvatarComponent, DropdownMenuDirective, DropdownItemDirective, DropdownDividerDirective]
 })
 export class DefaultHeaderComponent extends HeaderComponent {
   private _loginService = inject(LoginService);
   private _router = inject(Router);
-
+  private _commonService = inject(CommonService);
   readonly #colorModeService = inject(ColorModeService);
   readonly colorMode = this.#colorModeService.colorMode;
+
+  currentUser: User | null = null;
 
   readonly colorModes = [
     { name: 'light', text: 'Light', icon: 'cilSun' },
@@ -49,6 +55,7 @@ export class DefaultHeaderComponent extends HeaderComponent {
 
   constructor() {
     super();
+    this.getCurrentUser();
   }
 
   sidebarId = input('sidebar1');
@@ -59,4 +66,14 @@ export class DefaultHeaderComponent extends HeaderComponent {
     });
   }
 
+ getCurrentUser() {
+  return this._commonService.getCurrentUserProfile(USERS_COLLECTION_NAME).pipe(take(1))
+    .subscribe((user: User | null) => {
+      if (!user) {
+        this.currentUser = null;
+        return;
+      }
+      this.currentUser = user;
+    });
+}
 }

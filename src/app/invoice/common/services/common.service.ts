@@ -1,15 +1,19 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Firestore, collection, doc, addDoc, deleteDoc, updateDoc, orderBy, query, limit } from '@angular/fire/firestore';
 import { collectionData, docData } from '@angular/fire/firestore';
-import { map, Observable } from 'rxjs';
+import { map, Observable, switchMap, of } from 'rxjs';
 import { serverTimestamp, where, writeBatch } from 'firebase/firestore';
 
+import { Auth, authState } from '@angular/fire/auth';
+import { User } from '../../../layout/default-layout/default-header/models/user.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CommonService {
-  constructor(private _firestore: Firestore) { }
+
+  private auth = inject(Auth);
+  private _firestore = inject(Firestore);
 
   /** -------------------------
    * READ (REAL-TIME STREAM)
@@ -145,7 +149,7 @@ export class CommonService {
     return collectionData(q, { idField: '$key' });
   }
 
- async importCustomers(customers: any[]): Promise<number> {
+  async importCustomers(customers: any[]): Promise<number> {
     if (!Array.isArray(customers)) {
       throw new Error('Invalid data: customers must be an array');
     }
@@ -168,7 +172,7 @@ export class CommonService {
   }
 
 
-    async importProducts(products: any[]): Promise<number> {
+  async importProducts(products: any[]): Promise<number> {
     if (!Array.isArray(products)) {
       throw new Error('Invalid data: products must be an array');
     }
@@ -189,4 +193,30 @@ export class CommonService {
     await batch.commit();
     return products.length;
   }
+
+
+  getCurrentUserProfile(collectionName: string): Observable<User | null> {
+    return authState(this.auth).pipe(
+      switchMap(authUser => {
+        if (!authUser) {
+          return of(null);
+        }
+
+        const ref = doc(this._firestore, collectionName, authUser.uid);
+
+        return docData(ref).pipe(
+          map(data => {
+            if (!data) return null;
+
+            // 🔑 explicit, safe mapping
+            return {
+              uid: authUser.uid,
+              ...(data as Omit<User, 'uid'>)
+            } as User;
+          })
+        );
+      })
+    );
+  }
+
 }

@@ -128,28 +128,39 @@ export function ddMMyyyyToFirestoreTimestamp(
 
 export function invoiceWhatsappMessage(
   name: string,
+  url: string,
   invoiceNo: string,
-  url: string
+  subtotal: number,
+  discount: number,
+  total: number,
 ): string {
+
+  const discountLine =
+    discount && discount > 0
+      ? `छूट राशि(Discount): -₹${discount}\n`
+      : '';
+
   return `
-*✨अजंता गोल्ड✨*
+नमस्ते *${name}*
 
-🧾 *Invoice Number:* ${invoiceNo}
+बिल नंबर: *${invoiceNo}*
 
-नमस्ते *${name}* 🙏,
+उप-योग (Sub total): ₹${subtotal}
+${discountLine}
 
-आपका बिल सफलतापूर्वक तैयार कर दिया गया है।
-डाउनलोड करने के लिए नीचे दिए गए लिंक पर क्लिक करें:
+देय कुल राशि(Grand Total): *₹${total}*
 
+बिल देखने / डाउनलोड करने के लिए:
 ${url}
 
-📞 *संपर्क*
-Mobile - +91 9175929204
-Mobile - +91 9503085125
+------------------
+*अजंता गोल्ड*
+मोबाइल: +91 9175929204
+मोबाइल: +91 9503085125
 
-Website - 🕸️ www.ajantagold.com  
-Email - 📧 customer@ajantagold.com
-`;
+वेबसाइट: www.ajantagold.com
+ईमेल: customer@ajantagold.com
+
+`.trim();
 }
-
 

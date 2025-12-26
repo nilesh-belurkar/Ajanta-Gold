@@ -67,7 +67,7 @@
 }
 
 .invoice-headar {
-  height: 125px;
+  height: 140px;
   margin-bottom: 25px;
   background: #f3f3f3;
 
@@ -79,7 +79,7 @@
   .invoice-id {
     z-index: 0;
     background-image: linear-gradient(to bottom, #ff0000, #ff8100);
-    height: 125px !important;
+    height: 140px !important;
 
     .info {
       max-width: 250px;
@@ -152,6 +152,10 @@
   .logo-title {
     font-weight: 500;
     padding-left: 14px;
+  }
+  .logo-title-1 {
+    font-weight: 500;
+    padding-left: 36px;
   }
 
   .color-white {

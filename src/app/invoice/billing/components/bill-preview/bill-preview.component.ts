@@ -1,7 +1,7 @@
 import { CommonModule, DatePipe } from '@angular/common';
-import { AfterViewInit, Component, inject, NgZone, OnInit } from '@angular/core';
+import { Component, inject, NgZone, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { CommonService } from '../../../common/services/common.service';
 import { BILL_LIST_COLLECTION_NAME } from '../../../common/constants/constant';
 import { Bill } from '../../models/billing.model';
@@ -9,7 +9,6 @@ import { convertTimestamps, invoiceWhatsappMessage } from '../../../common/utili
 import jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
 import { take } from 'rxjs';
-import { Functions, httpsCallable } from '@angular/fire/functions';
 import { NgxSpinnerService } from 'ngx-spinner';
 
 
@@ -28,19 +27,15 @@ export class BillPreviewComponent implements OnInit {
   private _route = inject(ActivatedRoute);
   private _commonService = inject(CommonService);
   private _ngZone = inject(NgZone);
-  private _functions = inject(Functions);
- private _spinner = inject(NgxSpinnerService);
+  private _spinner = inject(NgxSpinnerService);
   billId!: string;
   billDetails!: Bill;
+
   ngOnInit(): void {
     this.billId = this._route.snapshot.paramMap.get('id') || '';
     this.getBillDetailsById(this.billId);
   }
 
-
-  ngAfterViewInit(): void {
-
-  }
   getBillDetailsById(billId: string) {
     this._commonService.getDocumentById(BILL_LIST_COLLECTION_NAME, billId).subscribe((bill: Bill) => {
       this.billDetails = bill;
@@ -123,12 +118,15 @@ export class BillPreviewComponent implements OnInit {
     const invoiceNo = this.billDetails.billNumber.toString();
     const mobile = this.billDetails.customerInfo.mobile;
     const name = this.billDetails.customerInfo.name;
+    const subTotal = this.billDetails.subTotal;
+    const grandTotal = this.billDetails.grandTotal;
+    const discount = this.billDetails.discount;
 
     // 4️⃣ Upload to Firebase (GEN-1 HTTP FUNCTION)
     const url = await this.uploadInvoiceToFirebase(base64Pdf, invoiceNo);
     this._spinner.hide();
     // 5️⃣ Open WhatsApp
-    this.openWhatsApp(name, mobile, url, invoiceNo);
+    this.openWhatsApp(name, mobile, url, invoiceNo, subTotal, discount, grandTotal);
   }
 
   private blobToBase64(blob: Blob): Promise<string> {
@@ -143,15 +141,13 @@ export class BillPreviewComponent implements OnInit {
     });
   }
 
-
-  openWhatsApp(name: string, mobile: string, url: string, invoiceNo: string) {
+  openWhatsApp(name: string, mobile: string, url: string, invoiceNo: string, subTotal: number, discount: number, grandTotal: number) {
     const phone = String(mobile).replace(/\D/g, '');
 
     if (phone.length < 10) {
       throw new Error('Invalid mobile number');
     }
-
-    const msg = invoiceWhatsappMessage(name, invoiceNo, url);
+    const msg = invoiceWhatsappMessage(name, url, invoiceNo, subTotal, discount, grandTotal);
     const encoded = encodeURIComponent(msg);
 
     window.open(`https://wa.me/91${phone}?text=${encoded}`, '_blank');
@@ -180,9 +176,4 @@ export class BillPreviewComponent implements OnInit {
     return data.url;
   }
 
-
-
-  // capturePDF() {
-  //    window.print();
-  // }
 }

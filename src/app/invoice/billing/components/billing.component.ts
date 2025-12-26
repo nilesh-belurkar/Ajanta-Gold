@@ -203,8 +203,9 @@ export class BillingComponent {
           this.loadBillings(this.currentYear)
           this._spinner.hide();
         }, error => {
-          this._spinner.hide()
-          this._toastrService.error('Error deleting billing: ' + error);
+          this._spinner.hide();
+          console.log(error);
+          this._toastrService.error('Failed to delete billing. Please contact admin.');
         });
       }
 

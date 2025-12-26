@@ -26,7 +26,7 @@
       </ng-template>
     </c-widget-stat-a>
   </c-col>
-  <c-col sm="6" xl="3">
+  <c-col sm="6" xl="3" class="d-none d-xl-block">
     <c-widget-stat-a color="warning" [title]="'Total Customers'">
       <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
         {{ newCustomersCount }}
@@ -39,7 +39,7 @@
       </ng-template>
     </c-widget-stat-a>
   </c-col>
-  <c-col sm="6" xl="3">
+  <c-col sm="6" xl="3" class="d-none d-xl-block">
     <c-widget-stat-a [title]="'Total Products'" color="info">
       <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
         <span>{{ newProductsCount }}</span>
@@ -52,8 +52,6 @@
       </ng-template>
     </c-widget-stat-a>
   </c-col>
-
-
 </c-row>
 
 <c-row class="g-4 mb-4 mt-4">
@@ -72,7 +70,8 @@
 
 </c-row>
 
-<c-row class="mt-4">
+<h4>Top 5 Billings</h4>
+<c-row>
   <c-col xs>
     <c-card class="mb-4">
       <c-card-body>
