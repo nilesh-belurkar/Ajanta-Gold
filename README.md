@@ -22,11 +22,11 @@ Reliable products for industrial and household use
 
 With 5+ years of experience, we continue to expand our product range and customer base.
 
-🧪 Products
+## 🧪 Products
 
 Our products are available in multiple variants such as scent and size.
 
-Product List
+## Product List
 
 Ajanta Gold Black Phenyle
 Kills bacteria, viruses, and fungi. Strong disinfectant for floor safety.
@@ -46,7 +46,7 @@ Insect and pest repellent for wardrobes and toilets.
 Ajanta Gold Camphor Tablets
 Pure camphor tablets used for daily aarti and religious rituals.
 
-🖼️ Gallery
+## 🖼️ Gallery
 
 The gallery showcases product images including:
 
@@ -62,7 +62,7 @@ Laxmi Gold cleaners
 
 Naphthalene balls (standard & tablet packs)
 
-👥 Team
+## 👥 Team
 
 Meet the people behind Ajanta Gold:
 
@@ -78,7 +78,7 @@ Mahesh Belurkar
 Marketing Manager
 📞 +91 8605589226
 
-📍 Get In Touch
+## 📍 Get In Touch
 
 We are actively accepting new orders.
 
@@ -89,7 +89,7 @@ Gopalchawdi, CIDCO, Nanded
 
 📞 Contact: +91 9175929204
 
-📝 Order Now
+## 📝 Order Now
 
 Customers can place new orders by submitting:
 
@@ -107,6 +107,6 @@ Content and images subject to updates
 
 Functional improvements ongoing
 
-📄 License
+## 📄 License
 
 This project is proprietary and intended for Ajanta Gold / Shree Laxman Chemicals internal and commercial use.
