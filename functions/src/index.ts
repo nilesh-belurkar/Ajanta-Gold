@@ -7,144 +7,92 @@ admin.initializeApp();
 
 const corsHandler = cors({ origin: true });
 
-/**
- * =====================================================
- * 🔐 Helper: verify token + check admin role
- * =====================================================
- */
-async function verifyActiveAdmin(req: any) {
+/* =====================================================
+   🔐 VERIFY AUTH (ANY LOGGED-IN USER)
+===================================================== */
+async function verifyUser(req: any): Promise<string> {
   const authHeader = req.headers.authorization;
+
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    throw new Error("UNAUTHORIZED");
+    throw { status: 401, message: "Missing Authorization token" };
   }
 
-  const idToken = authHeader.split("Bearer ")[1];
-  const decodedToken = await admin.auth().verifyIdToken(idToken);
-  const uid = decodedToken.uid;
+  const idToken = authHeader.replace("Bearer ", "").trim();
 
-  const userSnap = await admin.firestore()
-    .collection("users")
-    .doc(uid)
-    .get();
-
-  if (!userSnap.exists) {
-    throw new Error("USER_NOT_FOUND");
+  let decoded;
+  try {
+    decoded = await admin.auth().verifyIdToken(idToken);
+  } catch {
+    throw { status: 401, message: "Invalid or expired token" };
   }
 
-  const user = userSnap.data();
-
-  if (user?.role !== "admin" || user?.active !== true) {
-    throw new Error("FORBIDDEN");
-  }
-
-  return uid;
+  return decoded.uid;
 }
 
-/**
- * =====================================================
- * 🔑 ROLE MANAGEMENT FUNCTION
- * =====================================================
- */
-export const updateUserRole = functions.https.onRequest((req, res) => {
-  corsHandler(req, res, async () => {
-    try {
-      if (req.method !== "POST") {
-        return res.status(405).send("Method Not Allowed");
+/* =====================================================
+   📄 UPLOAD INVOICE PDF (ALL USERS)
+===================================================== */
+export const uploadInvoicePdf = functions
+  .runWith({
+    memory: "1GB",              // needed for PDF + canvas
+    timeoutSeconds: 120
+  })
+  .https.onRequest((req, res) => {
+    corsHandler(req, res, async () => {
+      try {
+        // 🔴 REQUIRED for CORS preflight
+        if (req.method === "OPTIONS") {
+          return res.status(204).send("");
+        }
+
+        if (req.method !== "POST") {
+          return res.status(405).send("Method Not Allowed");
+        }
+
+        const uid = await verifyUser(req);
+
+        const { base64Pdf, invoiceNo } = req.body;
+
+        if (!base64Pdf || !invoiceNo) {
+          return res.status(400).send("base64Pdf and invoiceNo are required");
+        }
+
+        const bucket = admin.storage().bucket();
+        const filePath = `invoices/${invoiceNo}-${uuidv4()}.pdf`;
+        const file = bucket.file(filePath);
+
+        const buffer = Buffer.from(base64Pdf, "base64");
+
+        await file.save(buffer, {
+          contentType: "application/pdf",
+          resumable: false,
+        });
+
+        await file.makePublic();
+
+        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${file.name}`;
+
+        await admin.firestore().collection("bill_list").doc(invoiceNo).set(
+          {
+            invoiceNo,
+            filePath,
+            fileUrl: publicUrl,
+            uploadedBy: uid,
+            createdAt: admin.firestore.FieldValue.serverTimestamp(),
+          },
+          { merge: true }
+        );
+
+        return res.status(200).json({ url: publicUrl });
+
+      } catch (err: any) {
+        console.error("UPLOAD ERROR FULL:", err);
+
+        if (err.status) {
+          return res.status(err.status).send(err.message);
+        }
+
+        return res.status(500).send("Internal Server Error");
       }
-
-      await verifyActiveAdmin(req);
-
-      const { targetUid, role } = req.body;
-
-      if (!targetUid || !role) {
-        return res.status(400).send("targetUid and role are required");
-      }
-
-      if (!["admin", "staff"].includes(role)) {
-        return res.status(400).send("Invalid role");
-      }
-
-      await admin.firestore().collection("users").doc(targetUid).set(
-        {
-          role,
-          updatedAt: admin.firestore.FieldValue.serverTimestamp(),
-        },
-        { merge: true }
-      );
-
-      return res.status(200).json({ success: true });
-
-    } catch (err: any) {
-      console.error("ROLE UPDATE ERROR:", err);
-
-      if (err.message === "UNAUTHORIZED") {
-        return res.status(401).send("Unauthorized");
-      }
-      if (err.message === "FORBIDDEN") {
-        return res.status(403).send("Only active admin allowed");
-      }
-
-      return res.status(500).send("Internal Server Error");
-    }
+    });
   });
-});
-
-/**
- * =====================================================
- * 📄 INVOICE PDF UPLOAD (ADMIN ONLY)
- * =====================================================
- */
-export const uploadInvoicePdf = functions.https.onRequest((req, res) => {
-  corsHandler(req, res, async () => {
-    try {
-      if (req.method !== "POST") {
-        return res.status(405).send("Method Not Allowed");
-      }
-
-      const adminUid = await verifyActiveAdmin(req);
-
-      const { base64Pdf, invoiceNo } = req.body;
-
-      if (!base64Pdf || !invoiceNo) {
-        return res.status(400).send("Missing base64Pdf or invoiceNo");
-      }
-
-      const fileName = `invoices/${uuidv4()}.pdf`;
-      const bucket = admin.storage().bucket();
-      const file = bucket.file(fileName);
-
-      const buffer = Buffer.from(base64Pdf, "base64");
-
-      await file.save(buffer, {
-        contentType: "application/pdf",
-      });
-
-      // ⚠️ Public forever – acceptable for WhatsApp invoices
-      await file.makePublic();
-
-      const publicUrl = `https://storage.googleapis.com/${bucket.name}/${file.name}`;
-
-      await admin.firestore().collection("bill_list").doc(invoiceNo).set({
-        invoiceNo,
-        filePath: fileName,
-        fileUrl: publicUrl,
-        uploadedBy: adminUid,
-        createdAt: admin.firestore.FieldValue.serverTimestamp(),
-      });
-
-      return res.status(200).json({ url: publicUrl });
-
-    } catch (err: any) {
-      console.error("UPLOAD ERROR:", err);
-
-      if (err.message === "UNAUTHORIZED") {
-        return res.status(401).send("Unauthorized");
-      }
-      if (err.message === "FORBIDDEN") {
-        return res.status(403).send("Only active admin allowed");
-      }
-
-      return res.status(500).send("Internal Server Error");
-    }
-  });
-});

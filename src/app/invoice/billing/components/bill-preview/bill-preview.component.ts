@@ -10,6 +10,7 @@ import jspdf from 'jspdf';
 import html2canvas from 'html2canvas';
 import { take } from 'rxjs';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { getAuth } from 'firebase/auth';
 
 
 @Component({
@@ -153,27 +154,42 @@ export class BillPreviewComponent implements OnInit {
     window.open(`https://wa.me/91${phone}?text=${encoded}`, '_blank');
   }
 
-  async uploadInvoiceToFirebase(base64Pdf: string, billNumber: string): Promise<string> {
-    const response = await fetch(
-      'https://us-central1-ajanta-gold.cloudfunctions.net/uploadInvoicePdf',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          base64Pdf,
-          invoiceNo: billNumber
-        })
-      }
-    );
+ async uploadInvoiceToFirebase(
+  base64Pdf: string,
+  billNumber: string
+): Promise<string> {
 
-    if (!response.ok) {
-      const err = await response.text();
-      throw new Error(err);
-      this._spinner.hide();
-    }
+  const auth = getAuth();
+  const user = auth.currentUser;
 
-    const data = await response.json();
-    return data.url;
+  if (!user) {
+    throw new Error('User not logged in');
   }
 
+  // 🔑 THIS IS WHAT YOU WERE MISSING
+  const token = await user.getIdToken(true);
+
+  const response = await fetch(
+    'https://us-central1-ajanta-gold.cloudfunctions.net/uploadInvoicePdf',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}` // ✅ REQUIRED
+      },
+      body: JSON.stringify({
+        base64Pdf,
+        invoiceNo: billNumber
+      })
+    }
+  );
+
+  if (!response.ok) {
+    const err = await response.text();
+    throw new Error(err);
+  }
+
+  const data = await response.json();
+  return data.url;
+}
 }
