@@ -65,8 +65,8 @@
     <tbody>
       <tr *ngFor="let billing of paginatedBillingList; let i = index">
         <th scope="row">{{ i + 1 }}</th>
-        <td title="{{ billing.billNumber }}">{{ billing.billNumber }}</td>
-        <td title="{{ billing.customerInfo.name }}">{{ billing.customerInfo.name }}</td>
+        <td title="{{ billing?.billNumber }}">{{ billing.billNumber }}</td>
+        <td title="{{ billing?.customerInfo?.name }}">{{ billing?.customerInfo?.name }}</td>
         <td title="View products details">
           <button cButton color="info" class="text-white button" (click)="onProductDetails(billing)">
             <svg cIcon name="cil-pencil" title="Edit billing details" class="mx-1"></svg>Product Details</button>

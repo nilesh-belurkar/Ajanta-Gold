@@ -194,7 +194,7 @@ export class BillingComponent {
   }
 
   async deleteBilling(bill: any) {
-    this.confirmModal.open(`Are you sure you want delete "${bill.customerInfo.name}"?`, 'Delete Confirmation');
+    this.confirmModal.open(`Are you sure you want delete "${bill?.customerInfo?.name}"?`, 'Delete Confirmation');
     const sub = this.confirmModal.confirmed.subscribe((result) => {
       if (result) {
       this._spinner.show();
