@@ -137,7 +137,7 @@ export function invoiceWhatsappMessage(
 
   const discountLine =
     discount && discount > 0
-      ? `छूट राशि(Discount): -₹${discount}\n`
+      ? `छूट राशि (Discount): -₹${formatINR(discount)}\n`
       : '';
 
   return `
@@ -145,10 +145,9 @@ export function invoiceWhatsappMessage(
 
 बिल नंबर: *${invoiceNo}*
 
-उप-योग (Sub total): ₹${subtotal}
+उप-योग (Sub total): ₹${formatINR(subtotal)}
 ${discountLine}
-
-देय कुल राशि(Grand Total): *₹${total}*
+देय कुल राशि (Grand Total): *₹${formatINR(total)}*
 
 बिल देखने / डाउनलोड करने के लिए:
 ${url}
@@ -160,7 +159,13 @@ ${url}
 
 वेबसाइट: www.ajantagold.com
 ईमेल: customer@ajantagold.com
-
 `.trim();
 }
 
+
+function formatINR(amount: number): string {
+  return new Intl.NumberFormat('en-IN', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(amount);
+}
