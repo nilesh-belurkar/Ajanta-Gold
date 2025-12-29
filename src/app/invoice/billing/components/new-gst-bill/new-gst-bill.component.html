@@ -77,6 +77,7 @@
             <th>Batch No</th>
             <th>Expiry Date</th>
             <th>Free Goods</th>
+            <th>GST</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -93,6 +94,7 @@
             <td title="{{ product.batchNumber }}">{{ product.batchNumber }}</td>
             <td title="{{ product.expiryDate }}">{{ product.expiryDate }}</td>
             <td title="{{ product.freeGoods }}">{{ product.freeGoods }}</td>
+            <td title="{{ product.SGST }}+{{ product.CGST }}">{{ product.SGST }}+{{ product.CGST }}</td>
             <td>
               <button cButton color="warning" class="text-white button" (click)="editProduct(product, i)"> <svg cIcon
                   name="cil-pencil" title="Delete product details" class="mx-1"></svg>Edit</button>

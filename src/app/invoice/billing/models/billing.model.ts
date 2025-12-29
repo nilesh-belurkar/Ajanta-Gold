@@ -9,6 +9,9 @@ export interface Product {
   expiryDate?: string;
   isDuplicate?: boolean;
   amount?:number;
+  SGST: number;
+  CGST: number;
+  amountIncludingtax: number;
 }
 
 export interface Customer {

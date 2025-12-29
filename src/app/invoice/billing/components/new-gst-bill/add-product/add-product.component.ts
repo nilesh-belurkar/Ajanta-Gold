@@ -77,6 +77,8 @@ export class AddProductComponent {
         batchNumber: this.existingProduct.batchNumber,
         freeGoods: this.existingProduct.freeGoods,
         expiryDate: this.existingProduct.expiryDate,
+        SGST: this.existingProduct.SGST,
+        CGST: this.existingProduct.CGST
       });
     }
   }
@@ -100,6 +102,8 @@ export class AddProductComponent {
       batchNumber: [''],
       freeGoods: [''],
       expiryDate: [null],
+      SGST: ['', Validators.required],
+      CGST:['', Validators.required],
     });
   }
 
@@ -115,6 +119,8 @@ export class AddProductComponent {
     this.addProductFrom.get('name')?.setValue(product.name);
     this.addProductFrom.get('HSNCode')?.setValue(Number(product.HSNCode));
     this.addProductFrom.get('$key')?.setValue(product.$key);
+    this.addProductFrom.get('CGST')?.setValue(product.CGST);
+    this.addProductFrom.get('SGST')?.setValue(product.SGST);
     this.showSuggestions = false;
   }
 }

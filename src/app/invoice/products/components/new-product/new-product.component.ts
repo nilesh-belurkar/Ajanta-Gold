@@ -45,6 +45,8 @@ export class NewProductComponent {
       price: ['', Validators.required],
       HSNCode: [''],
       $key: [''],
+      CGST: [9, Validators.required],
+      SGST: [9, Validators.required],
     });
   }
   ngOnInit(): void {
@@ -55,6 +57,8 @@ export class NewProductComponent {
         price: this.product.price,
         HSNCode: this.product.HSNCode,
         $key: this.product.$key,
+        CGST: this.product.CGST,
+        SGST: this.product.SGST,
       });
     }
   }
@@ -105,6 +109,8 @@ export class NewProductComponent {
       name: productDetails.name,
       price: productDetails.price,
       HSNCode: productDetails.HSNCode,
+      SGST: productDetails.SGST,
+      CGST: productDetails.CGST,
     });
     this._spinner.hide();
     this.saved.emit(productDetails);

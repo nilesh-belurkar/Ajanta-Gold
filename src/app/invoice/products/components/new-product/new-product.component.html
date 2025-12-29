@@ -35,6 +35,32 @@
         <input type="text" cFormControl formControlName="HSNCode" placeholder="Enter HSN Code number">
       </c-input-group>
     </div>
+    
+
+     <div>
+      <c-input-group>
+        <span cInputGroupText>CGST</span>
+        <input type="number" cFormControl formControlName="CGST" placeholder="Enter CGST percentage"
+          [class.is-invalid]="productForm.get('CGST')?.invalid && (productForm.get('CGST')?.touched || isFormSubmitted)">
+      </c-input-group>
+      <small class="validation-error"
+        *ngIf="productForm.get('CGST')?.invalid && (productForm.get('CGST')?.touched || isFormSubmitted)">
+        CGST is required.
+      </small>
+    </div>
+  
+    <div>
+      <c-input-group>
+        <span cInputGroupText>SGST</span>
+        <input type="number" cFormControl formControlName="SGST" placeholder="Enter SGST percentage"
+          [class.is-invalid]="productForm.get('SGST')?.invalid && (productForm.get('SGST')?.touched || isFormSubmitted)">
+      </c-input-group>
+
+       <small class="validation-error"
+        *ngIf="productForm.get('SGST')?.invalid && (productForm.get('SGST')?.touched || isFormSubmitted)">
+        SGST is required.
+      </small>
+    </div>
    
   </div>
 

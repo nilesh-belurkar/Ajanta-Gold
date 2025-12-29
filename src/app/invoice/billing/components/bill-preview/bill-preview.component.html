@@ -64,9 +64,11 @@
                       <tr class="tr">
                         <th>Sr.</th>
                         <th class="pl0 text-start">Product Name</th>
-                        <th class="text-center">Quantity</th>
+                        <th class="text-center">QTY</th>
                         <th class="text-center">Rate</th>
-                        <th class="text-end">Amount</th>
+                        <th class="text-center">Amount<br><small>(Excl. GST)</small></th>
+                        <th class="text-center">GST<br><small>(CGST + SGST)</small></th>
+                        <th class="text-center">Amount<br><small>(Incl. GST)</small></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -98,8 +100,12 @@
                         <td class="text-center">{{product.productQty}}</td>
                         <td class="text-center">{{product.productPrice | currency:'INR':'symbol':'1.2-2'}}</td>
                         <td class="text-end">{{product.amount | currency:'INR':'symbol':'1.2-2'}}</td>
+                        <td class="text-center">{{product.CGST}}% + {{product.SGST}}%</td>
+                        <td class="text-end">{{product?.amountIncludingtax | currency:'INR':'symbol':'1.2-2'}}</td>
                       </tr>
                       <tr>
+                        <td></td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -111,11 +117,17 @@
                         <td></td>
                         <td></td>
                         <td></td>
+                        <td></td>
+                        <td></td>
                         <td class="text-center">{{this.billDetails.discount}}% Discount</td>
                         <td class="text-end">-{{this.billDetails.totalDiscountAmount | currency:'INR':'symbol':'1.2-2'}}
                         </td>
                       </tr>
-                      <tr>
+                      <!-- <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -129,8 +141,10 @@
                         </td>
                         <td class="text-end gst-amount-block">+{{this.billDetails.totalTax |
                           currency:'INR':'symbol':'1.2-2'}}</td>
-                      </tr>
+                      </tr> -->
                       <tr>
+                        <td></td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>

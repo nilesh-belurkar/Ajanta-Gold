@@ -4,4 +4,6 @@ export interface Product {
   price: number;
   HSNCode: number;
   GST: number;
+  SGST: number;
+  CGST: number;
 }
