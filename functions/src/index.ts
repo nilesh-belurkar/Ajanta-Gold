@@ -4,95 +4,79 @@ import cors from "cors";
 import { v4 as uuidv4 } from "uuid";
 
 admin.initializeApp();
-
 const corsHandler = cors({ origin: true });
 
-/* =====================================================
-   🔐 VERIFY AUTH (ANY LOGGED-IN USER)
-===================================================== */
 async function verifyUser(req: any): Promise<string> {
   const authHeader = req.headers.authorization;
-
-  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+  if (!authHeader?.startsWith("Bearer ")) {
     throw { status: 401, message: "Missing Authorization token" };
   }
-
-  const idToken = authHeader.replace("Bearer ", "").trim();
-
-  let decoded;
-  try {
-    decoded = await admin.auth().verifyIdToken(idToken);
-  } catch {
-    throw { status: 401, message: "Invalid or expired token" };
-  }
-
+  const token = authHeader.replace("Bearer ", "").trim();
+  const decoded = await admin.auth().verifyIdToken(token);
   return decoded.uid;
 }
 
-/* =====================================================
-   📄 UPLOAD INVOICE PDF (ALL USERS)
-===================================================== */
 export const uploadInvoicePdf = functions
-  .runWith({
-    memory: "1GB",              // needed for PDF + canvas
-    timeoutSeconds: 120
-  })
+  .runWith({ memory: "1GB", timeoutSeconds: 120 })
   .https.onRequest((req, res) => {
     corsHandler(req, res, async () => {
       try {
-        // 🔴 REQUIRED for CORS preflight
-        if (req.method === "OPTIONS") {
-          return res.status(204).send("");
-        }
+        if (req.method === "OPTIONS") return res.status(204).send("");
+        if (req.method !== "POST") return res.status(405).send("Method Not Allowed");
 
-        if (req.method !== "POST") {
-          return res.status(405).send("Method Not Allowed");
-        }
-
-        const uid = await verifyUser(req);
+        await verifyUser(req);
 
         const { base64Pdf, invoiceNo } = req.body;
 
-        if (!base64Pdf || !invoiceNo) {
-          return res.status(400).send("base64Pdf and invoiceNo are required");
+        if (
+          typeof invoiceNo !== "string" ||
+          invoiceNo.trim().length < 3 ||
+          typeof base64Pdf !== "string"
+        ) {
+          return res.status(400).send("Invalid input");
+        }
+
+        const cleanedBase64 = base64Pdf.replace(
+          /^data:application\/pdf;base64,/,
+          ""
+        );
+
+        const buffer = Buffer.from(cleanedBase64, "base64");
+
+        if (
+          buffer.length < 1000 ||
+          !buffer.slice(0, 4).toString().startsWith("%PDF")
+        ) {
+          return res.status(400).send("Invalid PDF");
         }
 
         const bucket = admin.storage().bucket();
-        const filePath = `invoices/${invoiceNo}-${uuidv4()}.pdf`;
+        const filePath = `invoices/${invoiceNo.trim()}-${uuidv4()}.pdf`;
         const file = bucket.file(filePath);
 
-        const buffer = Buffer.from(base64Pdf, "base64");
-
+        // 1️⃣ Upload PDF
         await file.save(buffer, {
           contentType: "application/pdf",
           resumable: false,
         });
 
+        // 2️⃣ Make file public (old working behavior)
         await file.makePublic();
 
-        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${file.name}`;
+        // 3️⃣ Short public URL
+        const publicUrl =
+          `https://storage.googleapis.com/${bucket.name}/${file.name}`;
 
-        await admin.firestore().collection("bill_list").doc(invoiceNo).set(
-          {
-            invoiceNo,
-            filePath,
-            fileUrl: publicUrl,
-            uploadedBy: uid,
-            createdAt: admin.firestore.FieldValue.serverTimestamp(),
-          },
-          { merge: true }
-        );
+        // 4️⃣ Return URL to frontend
+        return res.status(200).json({
+          filePath,
+          url: publicUrl,
+        });
 
-        return res.status(200).json({ url: publicUrl });
 
       } catch (err: any) {
-        console.error("UPLOAD ERROR FULL:", err);
-
-        if (err.status) {
-          return res.status(err.status).send(err.message);
-        }
-
-        return res.status(500).send("Internal Server Error");
+        console.error("UPLOAD ERROR:", err);
+        return res.status(err.status || 500).send(err.message || "Internal Error");
       }
     });
   });
